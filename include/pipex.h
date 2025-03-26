@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/23 18:11:46 by amalangu          #+#    #+#             */
-/*   Updated: 2025/03/24 18:31:16 by amalangu         ###   ########.fr       */
+/*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
+/*   Updated: 2025/03/26 20:16:45 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,9 @@ typedef struct s_pipex
 {
 	char	**env;
 	char	***args;
-	int		f1;
-	int		f2;
+	int		*pipefds;
+	int		in;
+	int		out;
 
 }			t_pipex;
 
