@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 18:09:16 by amalangu          #+#    #+#             */
-/*   Updated: 2025/03/26 20:29:36 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/03 18:08:21 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,6 @@ int	open_fds(int ac, char **av, t_pipex *pipex)
 		return (-1);
 	pipex->in = open(av[1], O_RDONLY);
 	pipex->out = open(av[ac - 1], O_WRONLY);
-	dup2(pipex->in, 0);
-	dup2(pipex->out, 1);
-	close(pipex->in);
-	close(pipex->out);
 	return (0);
 }
 
@@ -114,27 +110,31 @@ void	free_pipex(t_pipex *pipex)
 	free(pipex);
 }
 
-void	exe_parent(t_pipex pipex, char **envp, int *pipefds)
+void	exe_child2(t_pipex pipex, char **envp, int *pipefds)
 {
 	int		i;
 	char	*tmp;
 
+	ft_putstr_fd(pipex.args[1][0], 2);
+	dup2(pipex.out, 1);
 	dup2(pipefds[1], 1);
 	close(pipefds[0]);
 	i = -1;
-	tmp = ft_strjoin(pipex.env[++i], pipex.args[1][0]);
-	while (execve(tmp, pipex.args[1], envp) < 0)
+	while (pipex.env[++i])
 	{
+		tmp = ft_strjoin(pipex.env[i], pipex.args[1][0]);
+		if (execve(tmp, pipex.args[0], envp) == 0)
+			return (free(tmp));
 		free(tmp);
-		tmp = ft_strjoin(pipex.env[++i], pipex.args[1][0]);
 	}
 }
 
-void	exe_child(t_pipex pipex, char **envp, int *pipefds)
+void	exe_child1(t_pipex pipex, char **envp, int *pipefds)
 {
 	int		i;
 	char	*tmp;
 
+	dup2(pipex.in, 0);
 	dup2(pipefds[0], 0);
 	close(pipefds[1]);
 	i = -1;
@@ -150,18 +150,23 @@ void	exe_child(t_pipex pipex, char **envp, int *pipefds)
 int	main(int ac, char **av, char **envp)
 {
 	t_pipex pipex;
-	pid_t child;
+	pid_t child1;
+	pid_t child2;
 	int pipefds[2];
 	if (check_args(ac, av, envp, &pipex))
 		return (-1);
 	if (pipe(pipefds))
 		return (ft_printf("pipe error\n"), -1);
-	child = fork();
-	if (child < 0)
+	child1 = fork();
+	if (child1 < 0)
 		return (perror("Fork:"), -1);
-	if (child == 0)
-		exe_child(pipex, envp, pipefds);
+	if (child1 == 0)
+		exe_child1(pipex, envp, pipefds);
 	child2 = fork();
+	if (child2 < 0)
+		return (perror("Fork:"), -1);
+	if (child2 == 0)
 		exe_child2(pipex, envp, pipefds);
-	free_pipex(&pipex);
+	close(pipefds[0]);
+	close(pipefds[1]);
 }

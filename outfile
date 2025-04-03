@@ -1,1 +1,9 @@
-3
+total 48
+drwxr-xr-x 2 antoine antoine  4096 Mar 23 18:11 include
+-rw-r--r-- 1 antoine antoine    11 Mar 24 17:30 infile
+drwxr-xr-x 4 antoine antoine  4096 Mar 24 18:39 libftprintf
+-rw-r--r-- 1 antoine antoine   634 Mar 26 20:21 Makefile
+-rw-r--r-- 1 antoine antoine   400 Apr  3 18:01 outfile
+-rwxr-xr-x 1 antoine antoine 22240 Apr  3 18:02 pipex
+drwxr-xr-x 3 antoine antoine  4096 Mar 24 18:39 src
+
