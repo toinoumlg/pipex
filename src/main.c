@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 18:09:16 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/03 18:08:21 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/04 15:10:31 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,10 @@ int	open_fds(int ac, char **av, t_pipex *pipex)
 		return (-1);
 	pipex->in = open(av[1], O_RDONLY);
 	pipex->out = open(av[ac - 1], O_WRONLY);
+	dup2(pipex->in, STDIN_FILENO);
+	close(pipex->in);
+	dup2(pipex->out, STDOUT_FILENO);
+	close(pipex->out);
 	return (0);
 }
 
@@ -81,49 +85,56 @@ int	set_args(int ac, char **av, t_pipex *pipex)
 	return (0);
 }
 
-int	check_args(int ac, char **av, char **envp, t_pipex *pipex)
+int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
 {
 	pipex->env = set_env(envp);
+	if (!pipex->env)
+		return (-1);
 	if (set_args(ac, av, pipex))
 		return (-1);
+	pipex->pipefds = ft_calloc(sizeof(int), 2);
+	pipex->childs = ft_calloc(sizeof(pid_t), ac - 3);
 	return (0);
 }
 
-void	free_pipex(t_pipex *pipex)
+void	free_pipex(t_pipex pipex)
 {
 	int	i;
 	int	j;
 
 	i = -1;
-	while (pipex->args[++i])
+	while (pipex.args[++i])
 	{
 		j = -1;
-		while (pipex->args[i][++j])
-			free(pipex->args[i][j]);
-		free(pipex->args[i]);
+		while (pipex.args[i][++j])
+			free(pipex.args[i][j]);
+		free(pipex.args[i]);
 	}
-	free(pipex->args);
+	if (pipex.args)
+		free(pipex.args);
 	i = -1;
-	while (pipex->env[++i])
-		free(pipex->env[i]);
-	free(pipex->env);
-	free(pipex);
+	while (pipex.env[++i])
+		free(pipex.env[i]);
+	if (pipex.env)
+		free(pipex.env);
+	if (pipex.pipefds)
+		free(pipex.pipefds);
+	if (pipex.childs)
+		free(pipex.childs);
 }
 
-void	exe_child2(t_pipex pipex, char **envp, int *pipefds)
+void	exe_last(t_pipex pipex, char **envp, int *pipefds, char **args)
 {
 	int		i;
 	char	*tmp;
 
-	ft_putstr_fd(pipex.args[1][0], 2);
-	dup2(pipex.out, 1);
-	dup2(pipefds[1], 1);
-	close(pipefds[0]);
+	close(pipefds[1]);
+	dup2(pipefds[0], STDIN_FILENO);
 	i = -1;
 	while (pipex.env[++i])
 	{
-		tmp = ft_strjoin(pipex.env[i], pipex.args[1][0]);
-		if (execve(tmp, pipex.args[0], envp) == 0)
+		tmp = ft_strjoin(pipex.env[i], args[0]);
+		if (execve(tmp, args, envp) == 0)
 			return (free(tmp));
 		free(tmp);
 	}
@@ -134,9 +145,8 @@ void	exe_child1(t_pipex pipex, char **envp, int *pipefds)
 	int		i;
 	char	*tmp;
 
-	dup2(pipex.in, 0);
-	dup2(pipefds[0], 0);
-	close(pipefds[1]);
+	close(pipefds[0]);
+	dup2(pipefds[1], STDOUT_FILENO);
 	i = -1;
 	while (pipex.env[++i])
 	{
@@ -147,26 +157,54 @@ void	exe_child1(t_pipex pipex, char **envp, int *pipefds)
 	}
 }
 
+void	exec(t_pipex pipex, char **envp, int *pipefds, char **args)
+{
+	int		i;
+	char	*tmp;
+
+	i = -1;
+	close(pipefds[0]);
+	dup2(pipefds[1], STDOUT_FILENO);
+	while (pipex.env[++i])
+	{
+		tmp = ft_strjoin(pipex.env[i], args[0]);
+		if (execve(tmp, args, envp) == 0)
+			return (free(tmp));
+		free(tmp);
+	}
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_pipex pipex;
-	pid_t child1;
-	pid_t child2;
-	int pipefds[2];
-	if (check_args(ac, av, envp, &pipex))
-		return (-1);
-	if (pipe(pipefds))
+	int i = -1;
+	// pid_t child1;
+	// pid_t child2;
+	if (init_and_check_args(ac, av, envp, &pipex))
+		return (free_pipex(pipex), -1);
+	if (pipe(pipex.pipefds))
 		return (ft_printf("pipe error\n"), -1);
-	child1 = fork();
-	if (child1 < 0)
+	while (pipex.args[++i + 1])
+	{
+		pipex.childs[i] = fork();
+		if (pipex.childs[i] < 0)
+			return (perror("Fork:"), -1);
+		if (pipex.childs[i] == 0)
+			exec(pipex, envp, pipex.pipefds, pipex.args[i]);
+	}
+	// child1 = fork;
+	// if (child1 < 0)
+	// 	return (perror("Fork:"), -1);
+	// if (child1 == 0)
+	// 	exe_child1(pipex, envp, pipex.pipefds);
+	// child2 = fork();
+	// if (child2 < 0)
+	// 	return (perror("Fork:"), -1);
+	// if (child2 == 0)
+	pipex.childs[i] = fork();
+	if (pipex.childs[i] < 0)
 		return (perror("Fork:"), -1);
-	if (child1 == 0)
-		exe_child1(pipex, envp, pipefds);
-	child2 = fork();
-	if (child2 < 0)
-		return (perror("Fork:"), -1);
-	if (child2 == 0)
-		exe_child2(pipex, envp, pipefds);
-	close(pipefds[0]);
-	close(pipefds[1]);
+	if (pipex.childs[i] == 0)
+		exe_last(pipex, envp, pipex.pipefds, pipex.args[i]);
+	free_pipex(pipex);
 }

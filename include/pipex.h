@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/03/26 20:16:45 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:44:33 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ typedef struct s_pipex
 	char	**env;
 	char	***args;
 	int		*pipefds;
+	pid_t	*childs;
 	int		in;
 	int		out;
 
