@@ -1,0 +1,10 @@
+Pour infile: 
+Check permission et existance
+Si non alors il faut skip la premiere commande
+
+
+Pour outfile:
+Check permission et existance 
+Si existe pas le creer 
+
+valgrind --leak-check=full --trace-children=yes --track-fds=yes ./pipex infiles/infile "ls -l" "wc -l" outfile
