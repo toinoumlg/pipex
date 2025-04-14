@@ -1,27 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   free.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/23 18:09:16 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 09:04:22 by amalangu         ###   ########.fr       */
+/*   Created: 2025/04/14 08:09:45 by amalangu          #+#    #+#             */
+/*   Updated: 2025/04/14 08:24:25 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-int	main(int ac, char **av, char **envp)
+void	free_pipex(t_pipex pipex)
 {
-	t_pipex	pipex;
+	int	i;
+	int	j;
 
-	if (init_and_check_args(ac, av, envp, &pipex))
-		return (free_pipex(pipex), -1);
-	if (pipe(pipex.pipefds))
-		return (ft_printf("pipe error\n"), -1);
-	child1(pipex, envp);
-	child2(pipex, envp);
-	free_pipex(pipex);
-	return (0);
+	i = -1;
+	while (pipex.args[++i])
+	{
+		j = -1;
+		while (pipex.args[i][++j])
+			free(pipex.args[i][j]);
+		free(pipex.args[i]);
+	}
+	if (pipex.args)
+		free(pipex.args);
+	i = -1;
+	while (pipex.env[++i])
+		free(pipex.env[i]);
+	if (pipex.env)
+		free(pipex.env);
 }

@@ -1,7 +1,7 @@
 NAME = pipex
 CC = cc
 CFLAGS = -Werror -Wextra -Wall
-SRC_FILES = main.c
+SRC_FILES = main.c free.c
 OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
 SRC_DIR = src/
 OBJ_DIR = $(SRC_DIR)obj
