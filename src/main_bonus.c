@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 18:09:16 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/15 00:12:58 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/15 00:16:35 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	main(int ac, char **av, char **envp)
 		return (-1);
 	first_child(&pipex, envp);
 	while (pipex.childs->next->next)
-		mid_childs(pipex, envp, &pipex.childs);
+		mid_childs();
 	last_child(&pipex, envp);
 	free_pipex(pipex);
 	return (0);
