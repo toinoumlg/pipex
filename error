@@ -8,3 +8,11 @@ Check permission et existance
 Si existe pas le creer 
 
 valgrind --leak-check=full --trace-children=yes --track-fds=yes ./pipex infiles/infile "ls -l" "wc -l" outfile
+
+< infiles/infile cat | grep Check > outfiles/outfile
+
+chmod 777 outfiles/outfile 
+chmod 666 outfiles/outfile_no_exec_right 
+chmod 555 outfiles/outfile_no_write_right 
+chmod 333 outfiles/outfile_no_read_right 
+chmod 000 outfiles/outfile_no_rights
