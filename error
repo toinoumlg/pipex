@@ -11,6 +11,15 @@ valgrind --leak-check=full --trace-children=yes --track-fds=yes ./pipex infiles/
 
 < infiles/infile cat | grep Check > outfiles/outfile
 
+./pipex infiles/infile "ls" "ls" outfiles/outfile
+< infiles/infile ls | ls > outfiles/outfile
+
+chmod 777 infiles/infile 
+chmod 666 infiles/infile_no_exec_right 
+chmod 555 infiles/infile_no_write_right 
+chmod 333 infiles/infile_no_read_right 
+chmod 000 infiles/infile_no_rights
+
 chmod 777 outfiles/outfile 
 chmod 666 outfiles/outfile_no_exec_right 
 chmod 555 outfiles/outfile_no_write_right 

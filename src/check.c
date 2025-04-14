@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 10:30:42 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 12:49:22 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ char	**set_env(char **envp)
 
 void	check_file(char *av, t_file *file)
 {
+	file->path = av;
 	file->exist = access(av, F_OK);
 	file->read = access(av, R_OK);
 	file->write = access(av, W_OK);
@@ -59,6 +60,13 @@ void	open_fds(int ac, char **av, t_pipex *pipex)
 		pipex->in.fd = open(av[1], O_RDONLY);
 		dup2(pipex->in.fd, STDIN_FILENO);
 		close(pipex->in.fd);
+	}
+	if (pipex->out.exist)
+	{
+		pipex->out.fd = open(av[ac - 1], O_CREAT | O_WRONLY, 0666);
+		dup2(pipex->out.fd, STDOUT_FILENO);
+		close(pipex->out.fd);
+		return (check_file(av[ac - 1], &pipex->out));
 	}
 	if (!pipex->out.write)
 	{
@@ -87,7 +95,6 @@ int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
 	if (!pipex->env)
 		return (-1);
 	open_fds(ac, av, pipex);
-	if (set_cmds(ac, av, pipex))
-		return (-1);
+	set_cmds(ac, av, pipex);
 	return (0);
 }

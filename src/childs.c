@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 10:48:52 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 12:49:55 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,9 @@ void	exe_child2(t_pipex pipex, char **envp, int *pipefds)
 		execve(tmp, pipex.args[1], envp);
 		free(tmp);
 	}
+	command_nf(pipex.args[1][0]);
+	free_pipex(pipex);
+	exit(EXIT_FAILURE);
 }
 
 void	exe_child1(t_pipex pipex, char **envp, int *pipefds)
@@ -44,8 +47,8 @@ void	exe_child1(t_pipex pipex, char **envp, int *pipefds)
 		execve(tmp, pipex.args[0], envp);
 		free(tmp);
 	}
-	ft_putstr_fd("pipex: command not found:", 2);
-	ft_putstr_fd(pipex.args[0][0], 2);
+	command_nf(pipex.args[0][0]);
+	free_pipex(pipex);
 	exit(EXIT_FAILURE);
 }
 
@@ -59,35 +62,34 @@ void	child1(t_pipex pipex, char **envp)
 		if (pipex.childs[0] < 0)
 			return (perror("Fork:"));
 		if (pipex.childs[0] == 0)
-			return (exe_child1(pipex, envp, pipex.pipefds));
+			exe_child1(pipex, envp, pipex.pipefds);
 		else
-		{
-			close(pipex.pipefds[1]);
 			waitpid(pipex.childs[0], &status, 0);
-		}
 	}
-	else
-		close(pipex.pipefds[1]);
+	else if (pipex.in.exist)
+		no_file_or_dir(pipex.in.path);
+	else if (pipex.in.read)
+		permission_denied(pipex.in.path);
+	close(pipex.pipefds[1]);
 }
 
 void	child2(t_pipex pipex, char **envp)
 {
 	int status;
 
-	ft_putstr_fd("caca", 2);
 	if (!pipex.out.write && !pipex.out.exist)
 	{
 		pipex.childs[1] = fork();
 		if (pipex.childs[1] < 0)
 			return (perror("Fork:"));
 		if (pipex.childs[1] == 0)
-			return (exe_child2(pipex, envp, pipex.pipefds));
+			exe_child2(pipex, envp, pipex.pipefds);
 		else
-		{
-			close(pipex.pipefds[0]);
 			waitpid(pipex.childs[1], &status, 0);
-		}
 	}
-	else
-		close(pipex.pipefds[0]);
+	else if (pipex.out.exist)
+		no_file_or_dir(pipex.out.path);
+	else if (pipex.out.write)
+		permission_denied(pipex.out.path);
+	close(pipex.pipefds[0]);
 }

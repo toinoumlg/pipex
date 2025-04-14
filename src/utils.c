@@ -1,26 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/23 18:09:16 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 11:59:05 by amalangu         ###   ########.fr       */
+/*   Created: 2025/04/14 11:24:13 by amalangu          #+#    #+#             */
+/*   Updated: 2025/04/14 11:44:06 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-int	main(int ac, char **av, char **envp)
+void	permission_denied(char *path)
 {
-	t_pipex	pipex;
+	ft_putstr_fd("pipex: permission denied: ", 2);
+	ft_putstr_fd(path, 2);
+	ft_putstr_fd("\n", 2);
+}
 
-	if (init_and_check_args(ac, av, envp, &pipex))
-		return (free_pipex(pipex), -1);
-	pipe(pipex.pipefds);
-	child1(pipex, envp);
-	child2(pipex, envp);
-	free_pipex(pipex);
-	return (0);
+void	no_file_or_dir(char *path)
+{
+	ft_putstr_fd("pipex: no such file or directory: ", 2);
+	ft_putstr_fd(path, 2);
+	ft_putstr_fd("\n", 2);
+}
+
+void	command_nf(char *cmd)
+{
+	ft_putstr_fd("pipex: command not found: ", 2);
+	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd("\n", 2);
 }

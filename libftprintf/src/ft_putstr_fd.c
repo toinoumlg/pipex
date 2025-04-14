@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: amalangu <amalangu@student.42.fr>          +#+  +:+       +#+        */
+/*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/08 11:05:31 by amalangu          #+#    #+#             */
-/*   Updated: 2024/11/26 11:01:37 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 11:45:27 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,7 @@
 // Outputs 's' to the given 'fd'.
 void	ft_putstr_fd(char *s, int fd)
 {
-	int		i;
-
-	i = 0;
-	if (s == NULL)
+	if (!s)
 		return ;
-	while (s[i])
-	{
-		write(fd, &s[i], 1);
-		i++;
-	}
+	write(fd, s, ft_strlen(s));
 }
