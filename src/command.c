@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:32:53 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 17:06:28 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:49:03 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,13 +80,52 @@ void	check_for_program_path(t_child *childs)
 	}
 }
 
+void	set_new_pipe(t_pipes **pipes)
+{
+	t_pipes	*tmp;
+
+	tmp = *pipes;
+	tmp = ft_calloc(sizeof(t_pipes), 1);
+	pipe(tmp->fds);
+	tmp->next = NULL;
+	*pipes = tmp;
+}
+
+void	add_new_pipe(t_pipes **pipes)
+{
+	t_pipes	*tmp;
+	t_pipes	*head;
+
+	tmp = *pipes;
+	if (!tmp)
+	{
+		set_new_pipe(&tmp);
+		*pipes = tmp;
+		return ;
+	}
+	else
+	{
+		head = tmp;
+		while (tmp->next)
+			tmp = tmp->next;
+		set_new_pipe(&tmp->next);
+		*pipes = head;
+	}
+}
+
 void	set_cmds(int ac, char **av, t_pipex *pipex)
 {
 	int	i;
+	int	j;
 
 	i = 1;
+	j = 0;
 	pipex->childs = NULL;
-	while (++i < ac - 1)
+	pipex->pipes = NULL;
+	while (++i < ac - 1 && ++j)
 		add_new_child(&pipex->childs, ft_split(av[i], ' '));
 	check_for_program_path(pipex->childs);
+	i = 0;
+	while (++i < j)
+		add_new_pipe(&pipex->pipes);
 }

@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 17:36:40 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:50:42 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	open_fds(int ac, char **av, t_pipex *pipex)
 
 int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
 {
-	if (ac != 5)
+	if (ac < 5)
 		return (-1);
 	pipex->env = set_env(envp);
 	if (!pipex->env)

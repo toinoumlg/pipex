@@ -6,20 +6,20 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 18:39:34 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:51:18 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	exe_last_child(t_pipex *pipex, char **envp, int *pipefds)
+void	exe_last_child(t_pipex *pipex, char **envp, int *fds)
 {
 	int		i;
 	char	*tmp;
 
-	close(pipefds[1]);
-	dup2(pipefds[0], STDIN_FILENO);
-	close(pipefds[0]);
+	close(fds[1]);
+	dup2(fds[0], STDIN_FILENO);
+	close(fds[0]);
 	i = -1;
 	while (pipex->env[++i])
 	{
@@ -32,14 +32,14 @@ void	exe_last_child(t_pipex *pipex, char **envp, int *pipefds)
 	exit(EXIT_FAILURE);
 }
 
-void	exe_first_child(t_pipex *pipex, char **envp, int *pipefds)
+void	exe_first_child(t_pipex *pipex, char **envp, int *fds)
 {
 	int		i;
 	char	*tmp;
 
-	close(pipefds[0]);
-	dup2(pipefds[1], STDOUT_FILENO);
-	close(pipefds[1]);
+	close(fds[0]);
+	dup2(fds[1], STDOUT_FILENO);
+	close(fds[1]);
 	i = -1;
 	while (pipex->env[++i])
 	{
@@ -62,7 +62,7 @@ void	first_child(t_pipex *pipex, char **envp)
 		if (pipex->childs->pid < 0)
 			return (perror("Fork:"));
 		if (pipex->childs->pid == 0)
-			exe_first_child(pipex, envp, pipex->pipefds);
+			exe_first_child(pipex, envp, pipex->pipes->fds);
 		else
 			waitpid(pipex->childs->pid, &status, 0);
 	}
@@ -70,20 +70,21 @@ void	first_child(t_pipex *pipex, char **envp)
 		no_file_or_dir(pipex->in.path);
 	else if (pipex->in.read)
 		permission_denied(pipex->in.path);
-	close(pipex->pipefds[1]);
+	close(pipex->pipes->fds[1]);
 	free_and_set_to_next(&pipex->childs);
 }
 
 void	last_child(t_pipex *pipex, char **envp)
 {
-	int		status;
+	int	status;
+
 	if (!pipex->out.write && !pipex->out.exist && pipex->childs->command.args)
 	{
 		pipex->childs->pid = fork();
 		if (pipex->childs->pid < 0)
 			return (perror("Fork:"));
 		if (pipex->childs->pid == 0)
-			exe_last_child(pipex, envp, pipex->pipefds);
+			exe_last_child(pipex, envp, pipex->pipes->fds);
 		else
 			waitpid(pipex->childs->pid, &status, 0);
 	}
@@ -91,6 +92,6 @@ void	last_child(t_pipex *pipex, char **envp)
 		no_file_or_dir(pipex->out.path);
 	else if (pipex->out.write)
 		permission_denied(pipex->out.path);
-	close(pipex->pipefds[0]);
+	close(pipex->pipes->fds[0]);
 	free_and_set_to_next(&pipex->childs);
 }

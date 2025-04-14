@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 18:33:26 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:39:06 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,18 +41,17 @@ typedef struct s_child
 	struct s_child		*next;
 }						t_child;
 
-typedef struct s_pipefds
+typedef struct s_pipes
 {
-	int					pipefds[2];
-	struct s_pipefds	*next;
+	int					fds[2];
+	struct s_pipes	*next;
 
-}						t_pipefds;
+}						t_pipes;
 
 typedef struct s_pipex
 {
 	char				**env;
-	t_pipefds			pipes;
-	int					pipefds[2];
+	t_pipes				*pipes;
 	t_child				*childs;
 	t_file				in;
 	t_file				out;
