@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:32:53 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 22:00:27 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 23:33:04 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,8 +62,9 @@ void	check_for_program_path(t_child *childs)
 			}
 			else
 			{
-				no_file_or_dir(childs->command.args[0]);
+				childs->command.path = ft_strdup(childs->command.args[0]);
 				free_args(childs->command.args);
+				childs->command.args = NULL;
 			}
 		}
 		childs = childs->next;

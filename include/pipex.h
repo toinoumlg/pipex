@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 21:59:58 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 23:38:25 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void				command_nf(char *cmd);
 void				no_file_or_dir(char *path);
 void				permission_denied(char *path);
 void				set_cmds(int ac, char **av, t_pipex *pipex);
+void				handle_errors(t_file file, t_child *child);
 
 void				print_childs(t_child *childs);
 #endif

@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 20:51:18 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 23:48:28 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,17 +59,12 @@ void	first_child(t_pipex *pipex, char **envp)
 	if (!pipex->in.read && !pipex->in.exist && pipex->childs->command.args)
 	{
 		pipex->childs->pid = fork();
-		if (pipex->childs->pid < 0)
-			return (perror("Fork:"));
 		if (pipex->childs->pid == 0)
 			exe_first_child(pipex, envp, pipex->pipes->fds);
 		else
 			waitpid(pipex->childs->pid, &status, 0);
 	}
-	else if (pipex->in.exist)
-		no_file_or_dir(pipex->in.path);
-	else if (pipex->in.read)
-		permission_denied(pipex->in.path);
+	handle_errors(pipex->in, pipex->childs);
 	close(pipex->pipes->fds[1]);
 	free_and_set_to_next(&pipex->childs);
 }
@@ -81,17 +76,11 @@ void	last_child(t_pipex *pipex, char **envp)
 	if (!pipex->out.write && !pipex->out.exist && pipex->childs->command.args)
 	{
 		pipex->childs->pid = fork();
-		if (pipex->childs->pid < 0)
-			return (perror("Fork:"));
 		if (pipex->childs->pid == 0)
 			exe_last_child(pipex, envp, pipex->pipes->fds);
 		else
 			waitpid(pipex->childs->pid, &status, 0);
 	}
-	else if (pipex->out.exist)
-		no_file_or_dir(pipex->out.path);
-	else if (pipex->out.write)
-		permission_denied(pipex->out.path);
+	handle_errors(pipex->out, pipex->childs);
 	close(pipex->pipes->fds[0]);
-	free_and_set_to_next(&pipex->childs);
 }

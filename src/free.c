@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:09:45 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 21:51:25 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 23:25:25 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	free_and_set_to_next(t_child **childs)
 	if (!*childs)
 		return ;
 	tmp = *childs;
+	if (!tmp->next)
+		return ;
 	next = tmp->next;
 	if (tmp->command.args)
 		free_args(tmp->command.args);
@@ -71,6 +73,7 @@ void	free_all_pipes(t_pipes *pipes)
 void	free_pipex(t_pipex pipex)
 {
 	free_all_childs(pipex.childs);
-	free_args(pipex.env);
+	if (pipex.env)
+		free_args(pipex.env);
 	free_all_pipes(pipex.pipes);
 }
