@@ -50,6 +50,11 @@ all commands for error:
 	./pipex infiles/infile cat /usr/bin/ct outfiles/outfile
 	< infiles/infile cat | /usr/bin/ct > outfiles/outfile
 
+	first path to command doest exist
+	./pipex infiles/infile /usr/bin/ct cat outfiles/outfile
+	< infiles/infile /usr/bin/ct | cat > outfiles/outfile
+
+
 first wrong
 ./pipex /dev/urandom "cat" "ls" outfiles/outfile
 < /dev/urandom cat | ls > outfiles/outfile

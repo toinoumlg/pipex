@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 23:38:25 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/15 00:11:40 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,8 @@ void				first_child(t_pipex *pipex, char **envp);
 void				last_child(t_pipex *pipex, char **envp);
 void				free_pipex(t_pipex pipex);
 void				free_args(char **args);
-void				free_and_set_to_next(t_child **childs);
+void				free_and_set_to_next_child(t_child **childs);
+void				free_and_set_to_next_pipes(t_pipes **pipes);
 void				command_nf(char *cmd);
 void				no_file_or_dir(char *path);
 void				permission_denied(char *path);

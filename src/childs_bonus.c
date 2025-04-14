@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   childs.c                                           :+:      :+:    :+:   */
+/*   childs copy.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/15 00:13:10 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/15 00:08:52 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	first_child(t_pipex *pipex, char **envp)
 	}
 	handle_errors(pipex->in, pipex->childs);
 	close(pipex->pipes->fds[1]);
-	free_and_set_to_next_child(&pipex->childs);
+	free_and_set_to_next(&pipex->childs);
 }
 
 void	last_child(t_pipex *pipex, char **envp)

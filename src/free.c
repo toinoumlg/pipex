@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:09:45 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 23:25:25 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/15 00:11:18 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	free_args(char **args)
 	args = NULL;
 }
 
-void	free_and_set_to_next(t_child **childs)
+void	free_and_set_to_next_child(t_child **childs)
 {
 	t_child	*next;
 	t_child	*tmp;
@@ -40,6 +40,21 @@ void	free_and_set_to_next(t_child **childs)
 		free(tmp->command.path);
 	free(tmp);
 	*childs = next;
+}
+
+void	free_and_set_to_next_pipes(t_pipes **pipes)
+{
+	t_pipes	*next;
+	t_pipes	*tmp;
+
+	if (!*pipes)
+		return ;
+	tmp = *pipes;
+	if (!tmp->next)
+		return ;
+	next = tmp->next;
+	free(tmp);
+	*pipes = next;
 }
 
 void	free_all_childs(t_child *childs)
