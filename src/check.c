@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 15:13:04 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 17:36:40 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,11 @@ void	open_fds(int ac, char **av, t_pipex *pipex)
 	if (pipex->out.exist)
 	{
 		pipex->out.fd = open(av[ac - 1], O_CREAT | O_WRONLY, 0666);
-		dup2(pipex->out.fd, STDOUT_FILENO);
-		close(pipex->out.fd);
+		if (pipex->out.fd > 0)
+		{
+			dup2(pipex->out.fd, STDOUT_FILENO);
+			close(pipex->out.fd);
+		}
 		return (check_file(av[ac - 1], &pipex->out));
 	}
 	if (!pipex->out.write)
@@ -74,39 +77,6 @@ void	open_fds(int ac, char **av, t_pipex *pipex)
 		dup2(pipex->out.fd, STDOUT_FILENO);
 		close(pipex->out.fd);
 	}
-}
-
-int	set_cmds(int ac, char **av, t_pipex *pipex)
-{
-	int		i;
-	char	*tmp;
-	int		j;
-
-	i = 1;
-	while (++i < ac - 1)
-	{
-		pipex->childs[i - 2].command.args = ft_split(av[i], ' ');
-		if (ft_strchr(pipex->childs[i - 2].command.args[0], '/'))
-		{
-			if (!access(pipex->childs[i - 2].command.args[0], X_OK))
-			{
-				tmp = ft_strdup(ft_strrchr(pipex->childs[i - 2].command.args[0],
-							'/') + 1);
-				pipex->childs[i - 2].command.path = pipex->childs[i
-					- 2].command.args[0];
-				pipex->childs[i - 2].command.args[0] = tmp;
-			}
-			else
-			{
-				no_file_or_dir(pipex->childs[i - 2].command.args[0]);
-				j = -1;
-				while (pipex->childs[i - 2].command.args[++j])
-					free(pipex->childs[i - 2].command.args[j]);
-				free(pipex->childs[i - 2].command.args);
-			}
-		}
-	}
-	return (0);
 }
 
 int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
