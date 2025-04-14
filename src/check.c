@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 09:04:07 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 10:30:42 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,24 +42,30 @@ char	**set_env(char **envp)
 	return (env);
 }
 
-int	check_fds(char *in, char *out)
+void	check_file(char *av, t_file *file)
 {
-	if (access(in, R_OK) == 0 && access(out, W_OK) == 0)
-		return (0);
-	else
-		return (-1);
+	file->exist = access(av, F_OK);
+	file->read = access(av, R_OK);
+	file->write = access(av, W_OK);
+	file->exec = access(av, X_OK);
 }
 
-int	open_fds(int ac, char **av, t_pipex *pipex)
+void	open_fds(int ac, char **av, t_pipex *pipex)
 {
-	check_fds(av[1], av[ac - 1]);
-	pipex->in = open(av[1], O_RDONLY);
-	pipex->out = open(av[ac - 1], O_WRONLY);
-	dup2(pipex->in, STDIN_FILENO);
-	close(pipex->in);
-	dup2(pipex->out, STDOUT_FILENO);
-	close(pipex->out);
-	return (0);
+	check_file(av[1], &pipex->in);
+	check_file(av[ac - 1], &pipex->out);
+	if (!pipex->in.read)
+	{
+		pipex->in.fd = open(av[1], O_RDONLY);
+		dup2(pipex->in.fd, STDIN_FILENO);
+		close(pipex->in.fd);
+	}
+	if (!pipex->out.write)
+	{
+		pipex->out.fd = open(av[ac - 1], O_WRONLY);
+		dup2(pipex->out.fd, STDOUT_FILENO);
+		close(pipex->out.fd);
+	}
 }
 
 int	set_cmds(int ac, char **av, t_pipex *pipex)
@@ -73,23 +79,15 @@ int	set_cmds(int ac, char **av, t_pipex *pipex)
 	return (0);
 }
 
-int	set_args(int ac, char **av, t_pipex *pipex)
-{
-	if (ac < 2)
-		return (-1);
-	if (open_fds(ac, av, pipex))
-		return (-1);
-	if (set_cmds(ac, av, pipex))
-		return (-1);
-	return (0);
-}
-
 int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
 {
+	if (ac < 2 || ac > 5)
+		return (-1);
 	pipex->env = set_env(envp);
 	if (!pipex->env)
 		return (-1);
-	if (set_args(ac, av, pipex))
+	open_fds(ac, av, pipex);
+	if (set_cmds(ac, av, pipex))
 		return (-1);
 	return (0);
 }
