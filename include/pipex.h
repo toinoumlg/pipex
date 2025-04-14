@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 09:04:16 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 10:14:11 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,23 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 
+typedef struct s_file
+{
+	int		fd;
+	int		exist;
+	int		read;
+	int		write;
+	int		exec;
+}			t_file;
+
 typedef struct s_pipex
 {
 	char	**env;
 	char	***args;
 	int		pipefds[2];
 	pid_t	childs[2];
-	int		in;
-	int		out;
+	t_file	in;
+	t_file	out;
 
 }			t_pipex;
 
