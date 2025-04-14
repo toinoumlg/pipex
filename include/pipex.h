@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 12:48:35 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 13:46:54 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,17 @@ typedef struct s_command
 	char		**args;
 }				t_command;
 
+typedef struct s_child
+{
+	pid_t		pid;
+	t_command	command;
+}				t_child;
+
 typedef struct s_pipex
 {
 	char		**env;
-	char		***args;
 	int			pipefds[2];
-	t_command	commands[2];
-	pid_t		childs[2];
+	t_child		childs[2];
 	t_file		in;
 	t_file		out;
 
