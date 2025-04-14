@@ -14,6 +14,9 @@ valgrind --leak-check=full --trace-children=yes --track-fds=yes ./pipex infiles/
 ./pipex /dev/urandom "cat" "ls" outfiles/outfile
 < /dev/urandom cat | ls > outfiles/outfile
 
+./pipex infiles/infile "lsd" "echo croote" outfiles/outfile
+< infiles/infile ls | cat > outfiles/outfile
+
 chmod 777 infiles/infile 
 chmod 666 infiles/infile_no_exec_right 
 chmod 555 infiles/infile_no_write_right 

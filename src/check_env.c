@@ -1,31 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check.c                                            :+:      :+:    :+:   */
+/*   check_env.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 22:04:40 by amalangu         ###   ########.fr       */
+/*   Created: 2025/04/14 21:39:50 by amalangu          #+#    #+#             */
+/*   Updated: 2025/04/14 21:57:23 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	set_fds(char *in_path, char *out_path, t_pipex *pipex)
+char	**get_env(char **envp)
 {
-	check_file(in_path, &pipex->in);
-	check_file(out_path, &pipex->out);
-	set_in_fd(pipex, in_path);
-	set_out_fd(pipex, out_path);
+	int	i;
+
+	i = -1;
+	while (envp[++i])
+		if (ft_strnstr(envp[i], "PATH", 5))
+			return (ft_split(ft_strchr(envp[i], '/'), ':'));
+	return (NULL);
 }
 
-int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
+char	**set_env(char **envp)
 {
-	pipex->env = set_env(envp);
-	if (!pipex->env)
-		return (-1);
-	set_fds(av[1], av[ac - 1], pipex);
-	set_cmds(ac, av, pipex);
-	return (0);
+	char	**env;
+	char	*tmp;
+	int		i;
+
+	i = -1;
+	env = get_env(envp);
+	if (!env)
+		return (NULL);
+	while (env[++i])
+	{
+		tmp = env[i];
+		env[i] = ft_strjoin(tmp, "/");
+		free(tmp);
+	}
+	return (env);
 }

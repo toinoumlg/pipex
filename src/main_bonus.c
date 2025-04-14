@@ -1,31 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check.c                                            :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 22:04:40 by amalangu         ###   ########.fr       */
+/*   Created: 2025/03/23 18:09:16 by amalangu          #+#    #+#             */
+/*   Updated: 2025/04/14 22:07:31 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	set_fds(char *in_path, char *out_path, t_pipex *pipex)
+int	main(int ac, char **av, char **envp)
 {
-	check_file(in_path, &pipex->in);
-	check_file(out_path, &pipex->out);
-	set_in_fd(pipex, in_path);
-	set_out_fd(pipex, out_path);
-}
+	t_pipex	pipex;
 
-int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
-{
-	pipex->env = set_env(envp);
-	if (!pipex->env)
+	if (init_and_check_args(ac, av, envp, &pipex))
 		return (-1);
-	set_fds(av[1], av[ac - 1], pipex);
-	set_cmds(ac, av, pipex);
+	first_child(&pipex, envp);
+	// while (pipex.childs->next)
+	// 	mid_childs(pipex, envp, &pipex.childs);
+	last_child(&pipex, envp);
+	free_pipex(pipex);
 	return (0);
 }

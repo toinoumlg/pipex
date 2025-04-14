@@ -1,7 +1,8 @@
 NAME = pipex
 CC = cc
 CFLAGS = -Werror -Wextra -Wall
-SRC_FILES = main.c free.c childs.c check.c utils.c command.c test_utils.c
+SRC_FILES = main.c free.c childs.c check.c check_files.c \
+	check_env.c putstr_error.c check_commands.c test_utils.c pipes.c
 OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
 SRC_DIR = src
 OBJ_DIR = $(SRC_DIR)/obj

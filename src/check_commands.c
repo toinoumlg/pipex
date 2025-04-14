@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   command.c                                          :+:      :+:    :+:   */
+/*   check_commands.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:32:53 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 20:49:03 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/14 22:00:27 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,69 +47,26 @@ void	add_new_child(t_child **child, char **args)
 
 void	check_for_program_path(t_child *childs)
 {
-	int		j;
 	char	*tmp;
 
 	while (childs)
 	{
+		childs->command.path = NULL;
+		if (ft_strchr(childs->command.args[0], '/'))
 		{
-			if (ft_strchr(childs->command.args[0], '/'))
+			if (!access(childs->command.args[0], X_OK))
 			{
-				if (!access(childs->command.args[0], X_OK))
-				{
-					tmp = ft_strdup(ft_strrchr(childs->command.args[0], '/')
-							+ 1);
-					childs->command.path = childs->command.args[0];
-					childs->command.args[0] = tmp;
-				}
-				else
-				{
-					no_file_or_dir(childs->command.args[0]);
-					j = -1;
-					while (childs->command.args[++j])
-						free(childs->command.args[j]);
-					free(childs->command.args);
-					childs->command.args = NULL;
-					childs->command.path = NULL;
-				}
+				tmp = ft_strdup(ft_strrchr(childs->command.args[0], '/') + 1);
+				childs->command.path = childs->command.args[0];
+				childs->command.args[0] = tmp;
 			}
 			else
-				childs->command.path = NULL;
+			{
+				no_file_or_dir(childs->command.args[0]);
+				free_args(childs->command.args);
+			}
 		}
 		childs = childs->next;
-	}
-}
-
-void	set_new_pipe(t_pipes **pipes)
-{
-	t_pipes	*tmp;
-
-	tmp = *pipes;
-	tmp = ft_calloc(sizeof(t_pipes), 1);
-	pipe(tmp->fds);
-	tmp->next = NULL;
-	*pipes = tmp;
-}
-
-void	add_new_pipe(t_pipes **pipes)
-{
-	t_pipes	*tmp;
-	t_pipes	*head;
-
-	tmp = *pipes;
-	if (!tmp)
-	{
-		set_new_pipe(&tmp);
-		*pipes = tmp;
-		return ;
-	}
-	else
-	{
-		head = tmp;
-		while (tmp->next)
-			tmp = tmp->next;
-		set_new_pipe(&tmp->next);
-		*pipes = head;
 	}
 }
 

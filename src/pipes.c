@@ -1,31 +1,46 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check.c                                            :+:      :+:    :+:   */
+/*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 22:04:40 by amalangu         ###   ########.fr       */
+/*   Created: 2025/04/14 21:52:55 by amalangu          #+#    #+#             */
+/*   Updated: 2025/04/14 21:59:50 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	set_fds(char *in_path, char *out_path, t_pipex *pipex)
+void	set_new_pipe(t_pipes **pipes)
 {
-	check_file(in_path, &pipex->in);
-	check_file(out_path, &pipex->out);
-	set_in_fd(pipex, in_path);
-	set_out_fd(pipex, out_path);
+	t_pipes	*tmp;
+
+	tmp = *pipes;
+	tmp = ft_calloc(sizeof(t_pipes), 1);
+	pipe(tmp->fds);
+	tmp->next = NULL;
+	*pipes = tmp;
 }
 
-int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
+void	add_new_pipe(t_pipes **pipes)
 {
-	pipex->env = set_env(envp);
-	if (!pipex->env)
-		return (-1);
-	set_fds(av[1], av[ac - 1], pipex);
-	set_cmds(ac, av, pipex);
-	return (0);
+	t_pipes	*tmp;
+	t_pipes	*head;
+
+	tmp = *pipes;
+	if (!tmp)
+	{
+		set_new_pipe(&tmp);
+		*pipes = tmp;
+		return ;
+	}
+	else
+	{
+		head = tmp;
+		while (tmp->next)
+			tmp = tmp->next;
+		set_new_pipe(&tmp->next);
+		*pipes = head;
+	}
 }
