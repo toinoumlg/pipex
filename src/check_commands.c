@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:32:53 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 23:33:04 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/17 15:06:35 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ void	set_cmds(int ac, char **av, t_pipex *pipex)
 		add_new_child(&pipex->childs, ft_split(av[i], ' '));
 	check_for_program_path(pipex->childs);
 	i = 0;
+	pipex->pids = ft_calloc(sizeof(int), i + 1);
+	ft_memset(pipex->pids, -1, i + 1);
 	while (++i < j)
 		add_new_pipe(&pipex->pipes);
 }

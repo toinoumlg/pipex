@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/15 00:11:40 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/17 15:16:57 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ typedef struct s_pipex
 	char			**env;
 	t_pipes			*pipes;
 	t_child			*childs;
+	int				*pids;
 	t_file			in;
 	t_file			out;
 
@@ -76,6 +77,7 @@ void				no_file_or_dir(char *path);
 void				permission_denied(char *path);
 void				set_cmds(int ac, char **av, t_pipex *pipex);
 void				handle_errors(t_file file, t_child *child);
-
+void				put_pids_to_array(int pid, int *pids);
 void				print_childs(t_child *childs);
+
 #endif
