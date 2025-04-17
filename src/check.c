@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/17 16:16:15 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/17 17:09:22 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	put_pids_to_array(int pid, int *pids)
 	int	i;
 
 	i = 0;
-	while (pids[i] == -1)
+	while (pids[i] != 0)
 		i++;
 	pids[i] = pid;
 }
