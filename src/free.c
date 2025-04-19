@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:09:45 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/17 15:17:08 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/19 17:29:25 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ void	free_all_pipes(t_pipes *pipes)
 void	free_pipex(t_pipex pipex)
 {
 	free_all_childs(pipex.childs);
-	if (pipex.env)
-		free_args(pipex.env);
+	free_args(pipex.env);
 	free_all_pipes(pipex.pipes);
+	free(pipex.pids);
 }

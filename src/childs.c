@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/17 16:14:29 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/19 17:36:46 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,10 +59,11 @@ void	first_child(t_pipex *pipex, char **envp)
 		pipex->childs->pid = fork();
 		if (pipex->childs->pid == 0)
 			exe_first_child(pipex, envp, pipex->pipes->fds);
+		else
+			put_pids_to_array(pipex->childs->pid, pipex->pids);
 	}
 	handle_errors(pipex->in, pipex->childs);
 	close(pipex->pipes->fds[1]);
-	put_pids_to_array(pipex->childs->pid, pipex->pids);
 	free_and_set_to_next_child(&pipex->childs);
 }
 
@@ -73,11 +74,9 @@ void	last_child(t_pipex *pipex, char **envp)
 		pipex->childs->pid = fork();
 		if (pipex->childs->pid == 0)
 			exe_last_child(pipex, envp, pipex->pipes->fds);
+		else
+			put_pids_to_array(pipex->childs->pid, pipex->pids);
 	}
 	handle_errors(pipex->out, pipex->childs);
-	ft_putstr_fd(ft_itoa(pipex->childs->pid), 2);
-	put_pids_to_array(pipex->childs->pid, pipex->pids);
-	ft_putstr_fd("\n", 2);
-	ft_putstr_fd(ft_itoa(pipex->pids[1]), 2);
 	close(pipex->pipes->fds[0]);
 }
