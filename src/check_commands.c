@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:32:53 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/19 18:06:19 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:25:05 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,17 @@ void	set_new_child(t_child **child, char **args)
 	tmp = *child;
 	tmp = ft_calloc(sizeof(t_child), 1);
 	tmp->next = NULL;
-	tmp->command.args = args;
+	if (args[0] != NULL)
+		tmp->command.args = args;
+	else
+	{
+		free(args);
+		tmp->command.args = ft_calloc(sizeof(char *), 2);
+		tmp->command.args[0] = ft_calloc(sizeof(char), 4);
+		tmp->command.args[0][0] = 'c';
+		tmp->command.args[0][1] = 'a';
+		tmp->command.args[0][2] = 't';
+	}
 	*child = tmp;
 }
 
