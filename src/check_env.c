@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 21:39:50 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/14 21:57:23 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/24 18:03:48 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ char	**set_env(char **envp)
 	int		i;
 
 	i = -1;
+	if (!envp)
+		return (NULL);
 	env = get_env(envp);
 	if (!env)
 		return (NULL);

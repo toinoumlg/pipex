@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/24 13:59:34 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/24 18:14:10 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,5 @@ void	last_child(t_pipex *pipex, char **envp)
 	}
 	handle_errors(pipex->out, pipex->childs);
 	close(pipex->pipes->fds[0]);
+	free_and_set_to_next_child(&pipex->childs);
 }
