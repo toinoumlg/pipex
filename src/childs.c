@@ -6,13 +6,13 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/22 14:06:05 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/24 13:59:34 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	exe_last_child(t_pipex *pipex, char **envp, int *fds)
+int	exe_last_child(t_pipex *pipex, char **envp, int *fds)
 {
 	int		i;
 	char	*tmp;
@@ -29,10 +29,10 @@ void	exe_last_child(t_pipex *pipex, char **envp, int *fds)
 	}
 	command_nf(pipex->childs->command.args[0]);
 	free_pipex(*pipex);
-	exit(EXIT_FAILURE);
+	exit(127);
 }
 
-void	exe_first_child(t_pipex *pipex, char **envp, int *fds)
+int	exe_first_child(t_pipex *pipex, char **envp, int *fds)
 {
 	int		i;
 	char	*tmp;
@@ -49,7 +49,7 @@ void	exe_first_child(t_pipex *pipex, char **envp, int *fds)
 	}
 	command_nf(pipex->childs->command.args[0]);
 	free_pipex(*pipex);
-	exit(EXIT_FAILURE);
+	exit(127);
 }
 
 void	first_child(t_pipex *pipex, char **envp)

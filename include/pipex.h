@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/19 17:57:34 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/24 17:02:23 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PIPEX_H
 
 # include "../libftprintf/include/libftprintf.h"
+# include <errno.h>
 # include <fcntl.h>
 # include <sys/types.h>
 # include <sys/wait.h>
