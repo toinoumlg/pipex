@@ -1,12 +1,3 @@
-Pour infile: 
-Check permission et existance
-Si non alors il faut skip la premiere commande
-
-
-Pour outfile:
-Check permission et existance 
-Si existe pas le creer 
-
 valgrind --leak-check=full --trace-children=yes --track-fds=yes ./pipex infiles/infile "ls -l" "wc -l" outfile
 
 all commands for error:
@@ -55,21 +46,23 @@ all commands for error:
 	< infiles/infile /usr/bin/ct | cat > outfiles/outfile
 
 
-first wrong
-./pipex /dev/urandom "cat" "ls" outfiles/outfile
-< /dev/urandom cat | ls > outfiles/outfile
+Test files setup:
 
-./pipex infiles/infile "lsd" "echo croote" outfiles/outfile
-< infiles/infile ls | cat > outfiles/outfile
-
-chmod 777 infiles/infile 
-chmod 666 infiles/infile_no_exec_right 
-chmod 555 infiles/infile_no_write_right 
-chmod 333 infiles/infile_no_read_right 
-chmod 000 infiles/infile_no_rights
-
-chmod 777 outfiles/outfile 
-chmod 666 outfiles/outfile_no_exec_right 
-chmod 555 outfiles/outfile_no_write_right 
-chmod 333 outfiles/outfile_no_read_right 
-chmod 000 outfiles/outfile_no_rights
+mkdir infiles
+cd infiles
+touch infile infile_no_exec_right infile_no_write_right infile_no_read_right infile_no_rights
+chmod 777 infile 
+chmod 666 infile_no_exec_right 
+chmod 555 infile_no_write_right 
+chmod 333 infile_no_read_right 
+chmod 000 infile_no_rights
+cd ..
+mkdir outfiles
+cd outfiles
+touch outfile outfile_no_exec_right outfile_no_write_right outfile_no_read_right outfile_no_rights
+chmod 777 outfile 
+chmod 666 outfile_no_exec_right 
+chmod 555 outfile_no_write_right 
+chmod 333 outfile_no_read_right 
+chmod 000 outfile_no_rights
+cd ..
