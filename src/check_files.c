@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 21:39:50 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/22 14:30:06 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:10:04 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,15 @@ void	set_in_fd(t_pipex *pipex, char *in_path)
 
 void	set_out_fd(t_pipex *pipex, char *out_path)
 {
-	if (pipex->out.exist)
+	if (pipex->out.exist || !pipex->out.write)
 	{
+		unlink(out_path);
 		pipex->out.fd = open(out_path, O_CREAT | O_WRONLY, 0666);
 		if (pipex->out.fd > 0)
 		{
 			dup2(pipex->out.fd, STDOUT_FILENO);
 			close(pipex->out.fd);
 		}
-		return (check_file(out_path, &pipex->out));
 	}
-	if (!pipex->out.write)
-	{
-		unlink(out_path);
-		pipex->out.fd = open(out_path, O_CREAT | O_WRONLY, 0666);
-		dup2(pipex->out.fd, STDOUT_FILENO);
-		close(pipex->out.fd);
-	}
+	check_file(out_path, &pipex->out);
 }

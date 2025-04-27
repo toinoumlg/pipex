@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 18:09:16 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/24 19:12:31 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:51:56 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ int	main(int ac, char **av, char **envp)
 
 	if (ac != 5)
 		return (1);
-	if (init_and_check_args(ac, av, envp, &pipex) < 0)
+	pipex.size = init_and_check_args(ac, av, envp, &pipex);
+	if (pipex.size < 0)
 		return (1);
 	first_child(&pipex, envp);
 	last_child(&pipex, envp);

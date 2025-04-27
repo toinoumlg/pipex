@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/24 20:05:24 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/27 16:42:34 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,8 @@ void	set_fds(char *in_path, char *out_path, t_pipex *pipex)
 {
 	check_file(in_path, &pipex->in);
 	check_file(out_path, &pipex->out);
-	set_in_fd(pipex, in_path);
+	set_out_fd(pipex, pipex->out.path);
+	set_in_fd(pipex, pipex->in.path);
 }
 
 int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)

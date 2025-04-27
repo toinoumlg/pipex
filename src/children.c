@@ -1,26 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   children.c                                           :+:      :+:    :+:   */
+/*   children.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/24 19:06:54 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:16:42 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	exe_last_child(t_pipex *pipex, char **envp, int *fds)
+void	try_execve(t_pipex *pipex, char **envp)
 {
-	int		i;
 	char	*tmp;
+	int		i;
 
-	close(fds[1]);
-	dup2(fds[0], STDIN_FILENO);
-	close(fds[0]);
-	set_out_fd(pipex, pipex->out.path);
 	i = -1;
 	while (pipex->env[++i])
 	{
@@ -28,6 +24,12 @@ void	exe_last_child(t_pipex *pipex, char **envp, int *fds)
 		execve(tmp, pipex->children->command.args, envp);
 		free(tmp);
 	}
+}
+
+void	exe_last_child(t_pipex *pipex, char **envp, int *fds)
+{
+	set_fds_last_child(fds);
+	try_execve(pipex, envp);
 	command_nf(pipex->children->command.args[0]);
 	free_pipex(*pipex);
 	exit(127);
@@ -35,19 +37,8 @@ void	exe_last_child(t_pipex *pipex, char **envp, int *fds)
 
 void	exe_first_child(t_pipex *pipex, char **envp, int *fds)
 {
-	int		i;
-	char	*tmp;
-
-	close(fds[0]);
-	dup2(fds[1], STDOUT_FILENO);
-	close(fds[1]);
-	i = -1;
-	while (pipex->env[++i])
-	{
-		tmp = ft_strjoin(pipex->env[i], pipex->children->command.args[0]);
-		execve(tmp, pipex->children->command.args, envp);
-		free(tmp);
-	}
+	set_fds_first_child(fds);
+	try_execve(pipex, envp);
 	command_nf(pipex->children->command.args[0]);
 	free_pipex(*pipex);
 	exit(127);
