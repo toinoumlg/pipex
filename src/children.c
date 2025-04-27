@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/27 17:16:42 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/27 17:36:38 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	try_execve(t_pipex *pipex, char **envp)
 
 void	exe_last_child(t_pipex *pipex, char **envp, int *fds)
 {
-	set_fds_last_child(fds);
+	set_fds_last_child(fds, pipex);
 	try_execve(pipex, envp);
 	command_nf(pipex->children->command.args[0]);
 	free_pipex(*pipex);
@@ -37,7 +37,7 @@ void	exe_last_child(t_pipex *pipex, char **envp, int *fds)
 
 void	exe_first_child(t_pipex *pipex, char **envp, int *fds)
 {
-	set_fds_first_child(fds);
+	set_fds_first_child(fds, pipex);
 	try_execve(pipex, envp);
 	command_nf(pipex->children->command.args[0]);
 	free_pipex(*pipex);
@@ -50,10 +50,15 @@ void	first_child(t_pipex *pipex, char **envp)
 	if (!pipex->in.read && !pipex->in.exist && pipex->children->command.args)
 	{
 		pipex->children->pid = fork();
+		if (pipex->children->pid < 0)
+		{
+			perror("dup2");
+			free_pipex(*pipex);
+			exit(EXIT_FAILURE);
+		}
 		if (pipex->children->pid == 0)
 			exe_first_child(pipex, envp, pipex->pipefds[0]);
-		else
-			put_pids_to_array(pipex->children->pid, pipex->pids);
+		put_pids_to_array(pipex->children->pid, pipex->pids);
 	}
 	handle_errors(pipex->in, pipex->children);
 	close(pipex->pipefds[0][1]);
@@ -65,10 +70,15 @@ void	last_child(t_pipex *pipex, char **envp)
 	if (!pipex->out.write && !pipex->out.exist && pipex->children->command.args)
 	{
 		pipex->children->pid = fork();
+		if (pipex->children->pid < 0)
+		{
+			perror("dup2");
+			free_pipex(*pipex);
+			exit(EXIT_FAILURE);
+		}
 		if (pipex->children->pid == 0)
 			exe_last_child(pipex, envp, pipex->pipefds[pipex->size - 2]);
-		else
-			put_pids_to_array(pipex->children->pid, pipex->pids);
+		put_pids_to_array(pipex->children->pid, pipex->pids);
 	}
 	handle_errors(pipex->out, pipex->children);
 	close(pipex->pipefds[pipex->size - 2][0]);
