@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/27 17:32:53 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/27 18:44:22 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_child
 typedef struct s_pipex
 {
 	char			**env;
-	int (*pipefds)[2];
+	int				(*pipefds)[2];
 	t_child			*children;
 	int				*pids;
 	int				size;
@@ -73,6 +73,9 @@ void				mid_children(t_pipex *pipex, char **envp);
 int					set_cmds(int ac, char **av, t_pipex *pipex);
 void				handle_errors(t_file file, t_child *child);
 void				handle_errors_mid(t_child *child);
+void				pipe_error(t_pipex *pipex);
+void				fork_error(t_pipex *pipex);
+void				dup2_error(t_pipex *pipex);
 void				set_fds_first_child(int *fds, t_pipex *pipex);
 void				set_fds_last_child(int *fds, t_pipex *pipex);
 void				put_pids_to_array(int pid, int *pids);

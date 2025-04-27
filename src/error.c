@@ -1,29 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   children_fds.c                                     :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/27 17:14:27 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/27 18:43:10 by amalangu         ###   ########.fr       */
+/*   Created: 2025/04/27 18:39:21 by amalangu          #+#    #+#             */
+/*   Updated: 2025/04/27 18:44:40 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	set_fds_first_child(int *fds, t_pipex *pipex)
+void	pipe_error(t_pipex *pipex)
 {
-	close(fds[0]);
-	if (dup2(fds[1], STDOUT_FILENO) == -1)
-		dup2_error(pipex);
-	close(fds[1]);
+	perror("pipe");
+	free_pipex(*pipex);
+	exit(EXIT_FAILURE);
 }
 
-void	set_fds_last_child(int *fds, t_pipex *pipex)
+void	fork_error(t_pipex *pipex)
 {
-	close(fds[1]);
-	if (dup2(fds[0], STDIN_FILENO) == -1)
-		dup2_error(pipex);
-	close(fds[0]);
+	perror("fork");
+	free_pipex(*pipex);
+	exit(EXIT_FAILURE);
+}
+
+void	dup2_error(t_pipex *pipex)
+{
+	perror("dup2");
+	free_pipex(*pipex);
+	exit(EXIT_FAILURE);
 }

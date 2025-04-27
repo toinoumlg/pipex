@@ -1,11 +1,11 @@
 NAME = pipex
 CC = cc
 CFLAGS = -Werror -Wextra -Wall
-SRC_FILES = main.c free.c children.c check.c check_files.c \
+SRC_FILES = main.c free.c children.c check.c check_files.c error.c \
 	check_env.c putstr_error.c check_commands.c test_utils.c children_fds.c
 BNS_SRC_FILES = main_bonus.c free.c children.c check.c check_files.c \
 	check_env.c putstr_error.c check_commands.c test_utils.c \
-	children_bonus.c children_fds.c
+	children_bonus.c children_fds.c error.c
 
 OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
 BNS_OBJ_FILES = $(BNS_SRC_FILES:%.c=$(OBJ_DIR)/%.o)
