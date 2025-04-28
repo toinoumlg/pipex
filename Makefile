@@ -1,4 +1,5 @@
 NAME = pipex
+NAME_BONUS = pipex_bonus
 CC = cc
 CFLAGS = -Werror -Wextra -Wall
 SRC_FILES = main.c free.c children.c check.c error.c \
@@ -16,8 +17,10 @@ LIBFTPRINTF = libftprintf/libftprintf.a
 
 all: $(NAME)
 
-bonus: $(LIBFTPRINTF) $(OBJ_DIR) $(BNS_OBJ_FILES)
-	$(CC) $(CFLAGS) -o $(NAME) $(BNS_OBJ_FILES) $(LIBFTPRINTF)
+bonus: $(NAME_BONUS)
+
+$(NAME_BONUS): $(LIBFTPRINTF) $(OBJ_DIR) $(BNS_OBJ_FILES)
+	$(CC) $(CFLAGS) -o $(NAME_BONUS) $(BNS_OBJ_FILES) $(LIBFTPRINTF)
 
 norminette:
 	@clear
@@ -40,7 +43,7 @@ clean:
 	make -C libftprintf clean
 
 fclean: clean
-	rm -rf pipex
+	rm -rf pipex pipex_bonus
 	make -C libftprintf fclean
 
 re: fclean all
