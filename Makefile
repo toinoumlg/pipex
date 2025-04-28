@@ -45,4 +45,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: libftprintf all bonus
+.PHONY: libftprintf all bonus re fclean clean
