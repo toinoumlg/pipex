@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/28 13:49:08 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/28 18:01:20 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,10 +65,10 @@ void	last_child(t_pipex *pipex, char **envp)
 {
 	if (!pipex->out.write && pipex->command->args)
 	{
-		pipex->pids[pipex->size - 2] = fork();
-		if (pipex->pids[pipex->size - 2] < 0)
+		pipex->pids[pipex->size - 1] = fork();
+		if (pipex->pids[pipex->size - 1] < 0)
 			fork_error(pipex);
-		if (pipex->pids[pipex->size - 2] == 0)
+		if (pipex->pids[pipex->size - 1] == 0)
 			exe_last_child(pipex, envp, pipex->pipefds[pipex->size - 2]);
 	}
 	handle_errors(pipex->out, pipex->command);
