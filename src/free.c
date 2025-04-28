@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:09:45 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/27 12:27:11 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/28 13:53:21 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,44 +23,44 @@ void	free_args(char **args)
 	args = NULL;
 }
 
-void	free_and_set_to_next_child(t_child **children)
+void	free_and_set_to_next_command(t_command **cmd)
 {
-	t_child	*next;
-	t_child	*tmp;
+	t_command	*next;
+	t_command	*tmp;
 
-	if (!*children)
+	if (!*cmd)
 		return ;
-	tmp = *children;
+	tmp = *cmd;
 	if (!tmp->next)
 		return ;
 	next = tmp->next;
-	if (tmp->command.args)
-		free_args(tmp->command.args);
-	if (tmp->command.path)
-		free(tmp->command.path);
+	if (tmp->args)
+		free_args(tmp->args);
+	if (tmp->path)
+		free(tmp->path);
 	free(tmp);
-	*children = next;
+	*cmd = next;
 }
 
-void	free_all_children(t_child *children)
+void	free_all_commands(t_command *cmd)
 {
-	t_child	*tmp;
+	t_command	*tmp;
 
-	while (children)
+	while (cmd)
 	{
-		tmp = children->next;
-		if (children->command.args)
-			free_args(children->command.args);
-		if (children->command.path)
-			free(children->command.path);
-		free(children);
-		children = tmp;
+		tmp = cmd->next;
+		if (cmd->args)
+			free_args(cmd->args);
+		if (cmd->path)
+			free(cmd->path);
+		free(cmd);
+		cmd = tmp;
 	}
 }
 
 void	free_pipex(t_pipex pipex)
 {
-	free_all_children(pipex.children);
+	free_all_commands(pipex.command);
 	free_args(pipex.env);
 	free(pipex.pipefds);
 	free(pipex.pids);

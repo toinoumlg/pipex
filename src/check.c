@@ -6,28 +6,60 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/27 16:42:34 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/28 14:10:58 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	put_pids_to_array(int pid, int *pids)
+void	check_file(char *av, t_file *file)
 {
-	int	i;
+	file->path = av;
+	file->exist = access(av, F_OK);
+	file->read = access(av, R_OK);
+	file->write = access(av, W_OK);
+	file->exec = access(av, X_OK);
+}
 
-	i = 0;
-	while (pids[i] != 0)
-		i++;
-	pids[i] = pid;
+void	set_in_fd(t_pipex *pipex, char *in_path)
+{
+	if (!pipex->in.read)
+	{
+		pipex->in.fd = open(in_path, O_RDONLY);
+		if (dup2(pipex->in.fd, STDIN_FILENO) == -1)
+		{
+			close(pipex->in.fd);
+			dup2_error(pipex);
+		}
+		close(pipex->in.fd);
+	}
+}
+
+void	set_out_fd(t_pipex *pipex, char *out_path)
+{
+	if (pipex->out.exist || !pipex->out.write)
+	{
+		unlink(out_path);
+		pipex->out.fd = open(out_path, O_CREAT | O_WRONLY, 0666);
+		if (pipex->out.fd > 0)
+		{
+			if (dup2(pipex->out.fd, STDOUT_FILENO) == -1)
+			{
+				close(pipex->in.fd);
+				dup2_error(pipex);
+			}
+			close(pipex->out.fd);
+		}
+	}
+	check_file(out_path, &pipex->out);
 }
 
 void	set_fds(char *in_path, char *out_path, t_pipex *pipex)
 {
 	check_file(in_path, &pipex->in);
 	check_file(out_path, &pipex->out);
-	set_out_fd(pipex, pipex->out.path);
 	set_in_fd(pipex, pipex->in.path);
+	set_out_fd(pipex, pipex->out.path);
 }
 
 int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)

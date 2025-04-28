@@ -6,43 +6,43 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:32:53 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/27 17:11:43 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/28 13:52:15 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	set_new_child(t_child **child, char **args)
+void	set_new_command(t_command **cmd, char **args)
 {
-	t_child	*tmp;
+	t_command	*tmp;
 
-	tmp = *child;
-	tmp = ft_calloc(sizeof(t_child), 1);
+	tmp = *cmd;
+	tmp = ft_calloc(sizeof(t_command), 1);
 	tmp->next = NULL;
 	if (args[0] != NULL)
-		tmp->command.args = args;
+		tmp->args = args;
 	else
 	{
 		free(args);
-		tmp->command.args = ft_calloc(sizeof(char *), 2);
-		tmp->command.args[0] = ft_calloc(sizeof(char), 4);
-		tmp->command.args[0][0] = 'c';
-		tmp->command.args[0][1] = 'a';
-		tmp->command.args[0][2] = 't';
+		tmp->args = ft_calloc(sizeof(char *), 2);
+		tmp->args[0] = ft_calloc(sizeof(char), 4);
+		tmp->args[0][0] = 'c';
+		tmp->args[0][1] = 'a';
+		tmp->args[0][2] = 't';
 	}
-	*child = tmp;
+	*cmd = tmp;
 }
 
-void	add_new_child(t_child **child, char **args)
+void	add_new_command(t_command **cmd, char **args)
 {
-	t_child	*tmp;
-	t_child	*head;
+	t_command	*tmp;
+	t_command	*head;
 
-	tmp = *child;
+	tmp = *cmd;
 	if (!tmp)
 	{
-		set_new_child(&tmp, args);
-		*child = tmp;
+		set_new_command(&tmp, args);
+		*cmd = tmp;
 		return ;
 	}
 	else
@@ -50,34 +50,34 @@ void	add_new_child(t_child **child, char **args)
 		head = tmp;
 		while (tmp->next)
 			tmp = tmp->next;
-		set_new_child(&tmp->next, args);
-		*child = head;
+		set_new_command(&tmp->next, args);
+		*cmd = head;
 	}
 }
 
-void	check_for_program_path(t_child *children)
+void	check_for_program_path(t_command *cmd)
 {
 	char	*tmp;
 
-	while (children)
+	while (cmd)
 	{
-		children->command.path = NULL;
-		if (ft_strchr(children->command.args[0], '/'))
+		cmd->path = NULL;
+		if (ft_strchr(cmd->args[0], '/'))
 		{
-			if (!access(children->command.args[0], X_OK))
+			if (!access(cmd->args[0], X_OK))
 			{
-				tmp = ft_strdup(ft_strrchr(children->command.args[0], '/') + 1);
-				children->command.path = children->command.args[0];
-				children->command.args[0] = tmp;
+				tmp = ft_strdup(ft_strrchr(cmd->args[0], '/') + 1);
+				cmd->path = cmd->args[0];
+				cmd->args[0] = tmp;
 			}
 			else
 			{
-				children->command.path = ft_strdup(children->command.args[0]);
-				free_args(children->command.args);
-				children->command.args = NULL;
+				cmd->path = ft_strdup(cmd->args[0]);
+				free_args(cmd->args);
+				cmd->args = NULL;
 			}
 		}
-		children = children->next;
+		cmd = cmd->next;
 	}
 }
 
@@ -88,10 +88,10 @@ int	set_cmds(int ac, char **av, t_pipex *pipex)
 
 	i = 1;
 	j = 0;
-	pipex->children = NULL;
+	pipex->command = NULL;
 	while (++i < ac - 1 && ++j)
-		add_new_child(&pipex->children, ft_split(av[i], ' '));
-	check_for_program_path(pipex->children);
+		add_new_command(&pipex->command, ft_split(av[i], ' '));
+	check_for_program_path(pipex->command);
 	pipex->pids = ft_calloc(sizeof(int), j + 1);
 	pipex->pipefds = ft_calloc(sizeof(int [2]), j);
 	return (j);
