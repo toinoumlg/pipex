@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/24 17:02:23 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/02 18:47:07 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,64 +21,53 @@
 
 typedef struct s_file
 {
-	char			*path;
-	int				fd;
-	int				exist;
-	int				read;
-	int				write;
-	int				exec;
-}					t_file;
+	char				*path;
+	int					fd;
+	int					exist;
+	int					read;
+	int					write;
+	int					exec;
+}						t_file;
 
 typedef struct s_command
 {
-	char			*path;
-	char			**args;
-}					t_command;
+	char				*path;
+	char				**args;
+	struct s_command	*next;
 
-typedef struct s_child
-{
-	pid_t			pid;
-	t_command		command;
-	struct s_child	*next;
-}					t_child;
-
-typedef struct s_pipes
-{
-	int				fds[2];
-	struct s_pipes	*next;
-
-}					t_pipes;
+}						t_command;
 
 typedef struct s_pipex
 {
-	char			**env;
-	t_pipes			*pipes;
-	t_child			*childs;
-	int				*pids;
-	t_file			in;
-	t_file			out;
+	char				**env;
+	int (*pipefds)[2];
+	t_command			*command;
+	int					*pids;
+	int					size;
+	t_file				in;
+	t_file				out;
+}						t_pipex;
 
-}					t_pipex;
-
-int					init_and_check_args(int ac, char **av, char **envp,
-						t_pipex *pipex);
-char				**set_env(char **envp);
-void				check_file(char *av, t_file *file);
-void				set_in_fd(t_pipex *pipex, char *in_path);
-void				set_out_fd(t_pipex *pipex, char *out_path);
-void				add_new_pipe(t_pipes **pipes);
-void				first_child(t_pipex *pipex, char **envp);
-void				last_child(t_pipex *pipex, char **envp);
-void				free_pipex(t_pipex pipex);
-void				free_args(char **args);
-void				free_and_set_to_next_child(t_child **childs);
-void				free_and_set_to_next_pipes(t_pipes **pipes);
-void				command_nf(char *cmd);
-void				no_file_or_dir(char *path);
-void				permission_denied(char *path);
-void				set_cmds(int ac, char **av, t_pipex *pipex);
-void				handle_errors(t_file file, t_child *child);
-void				put_pids_to_array(int pid, int *pids);
-void				print_childs(t_child *childs);
+int						init_and_check_args(int ac, char **av, char **envp,
+							t_pipex *pipex);
+int						set_env(char **envp, t_pipex *pipex);
+int						set_cmds(int ac, char **av, t_pipex *pipex);
+void					first_child(t_pipex *pipex, char **envp);
+void					mid_children(t_pipex *pipex, char **envp);
+void					last_child(t_pipex *pipex, char **envp);
+void					set_fds_first_child(int *fds, t_pipex *pipex);
+void					set_fds_last_child(int *fds, t_pipex *pipex);
+void					try_execve(t_pipex *pipex, char **envp);
+void					command_nf(char *cmd);
+void					no_file_or_dir(char *path);
+void					permission_denied(char *path);
+void					handle_errors(t_file file, t_command *cmd);
+void					handle_errors_mid(t_command *cmd);
+void					pipe_error(t_pipex *pipex);
+void					fork_error(t_pipex *pipex);
+void					dup2_error(t_pipex *pipex);
+void					free_pipex(t_pipex pipex);
+void					free_args(char **args);
+void					free_and_set_to_next_command(t_command **cmd);
 
 #endif

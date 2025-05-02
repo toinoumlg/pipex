@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:09:45 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/24 17:07:32 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/02 18:56:28 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,63 +17,60 @@ void	free_args(char **args)
 	int	i;
 
 	i = -1;
+	if (!args)
+		return ;
 	while (args[++i])
+	{
 		free(args[i]);
+	}
 	free(args);
 	args = NULL;
 }
 
-void	free_and_set_to_next_child(t_child **childs)
+void	free_and_set_to_next_command(t_command **cmd)
 {
-	t_child	*next;
-	t_child	*tmp;
+	t_command	*next;
+	t_command	*tmp;
 
-	if (!*childs)
+	if (!*cmd)
 		return ;
-	tmp = *childs;
+	tmp = *cmd;
 	if (!tmp->next)
 		return ;
 	next = tmp->next;
-	if (tmp->command.args)
-		free_args(tmp->command.args);
-	if (tmp->command.path)
-		free(tmp->command.path);
+	if (tmp->args)
+		free_args(tmp->args);
+	if (tmp->path)
+		free(tmp->path);
 	free(tmp);
-	*childs = next;
+	*cmd = next;
 }
 
-void	free_all_childs(t_child *childs)
+void	free_all_commands(t_command *cmd)
 {
-	t_child	*tmp;
+	t_command	*tmp;
 
-	while (childs)
+	if (!cmd)
+		return ;
+	while (cmd)
 	{
-		tmp = childs->next;
-		if (childs->command.args)
-			free_args(childs->command.args);
-		if (childs->command.path)
-			free(childs->command.path);
-		free(childs);
-		childs = tmp;
-	}
-}
-
-void	free_all_pipes(t_pipes *pipes)
-{
-	t_pipes	*tmp;
-
-	while (pipes)
-	{
-		tmp = pipes->next;
-		free(pipes);
-		pipes = tmp;
+		tmp = cmd->next;
+		if (cmd->args)
+			free_args(cmd->args);
+		if (cmd->path)
+			free(cmd->path);
+		free(cmd);
+		cmd = tmp;
 	}
 }
 
 void	free_pipex(t_pipex pipex)
 {
-	free_all_childs(pipex.childs);
-	free_args(pipex.env);
-	free_all_pipes(pipex.pipes);
-	free(pipex.pids);
+	free_all_commands(pipex.command);
+	if (pipex.env)
+		free_args(pipex.env);
+	if (pipex.pipefds)
+		free(pipex.pipefds);
+	if (pipex.pids)
+		free(pipex.pids);
 }

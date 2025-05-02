@@ -6,95 +6,118 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:32:53 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/24 16:58:51 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/02 17:37:16 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	set_new_child(t_child **child, char **args)
+int	set_up_cat(t_command **cmd, char **args, t_command *tmp)
 {
-	t_child	*tmp;
-
-	tmp = *child;
-	tmp = ft_calloc(sizeof(t_child), 1);
-	tmp->next = NULL;
-	if (args[0] != NULL)
-		tmp->command.args = args;
-	else
+	free(args);
+	tmp->args = ft_calloc(sizeof(char *), 2);
+	if (!tmp->args)
 	{
-		free(args);
-		tmp->command.args = ft_calloc(sizeof(char *), 2);
-		tmp->command.args[0] = ft_calloc(sizeof(char), 4);
-		tmp->command.args[0][0] = 'c';
-		tmp->command.args[0][1] = 'a';
-		tmp->command.args[0][2] = 't';
+		free(tmp);
+		*cmd = NULL;
+		return (-1);
 	}
-	*child = tmp;
+	tmp->args[0] = ft_strdup("cat");
+	return (0);
 }
 
-void	add_new_child(t_child **child, char **args)
+int	set_new_command(t_command **cmd, char **args)
 {
-	t_child	*tmp;
-	t_child	*head;
+	t_command	*tmp;
 
-	tmp = *child;
+	tmp = *cmd;
+	tmp = ft_calloc(sizeof(t_command), 1);
 	if (!tmp)
 	{
-		set_new_child(&tmp, args);
-		*child = tmp;
-		return ;
+		*cmd = NULL;
+		return (-1);
+	}
+	tmp->next = NULL;
+	if (args[0] != NULL)
+		tmp->args = args;
+	else if (args[0] == NULL && set_up_cat(cmd, args, tmp))
+		return (-1);
+	*cmd = tmp;
+	return (0);
+}
+
+int	add_new_command(t_command **cmd, char **args)
+{
+	t_command	*tmp;
+	t_command	*head;
+
+	tmp = *cmd;
+	if (!tmp)
+	{
+		if (set_new_command(&tmp, args))
+			return (-1);
+		*cmd = tmp;
 	}
 	else
 	{
 		head = tmp;
 		while (tmp->next)
 			tmp = tmp->next;
-		set_new_child(&tmp->next, args);
-		*child = head;
+		if (set_new_command(&tmp->next, args))
+			return (-1);
+		*cmd = head;
 	}
+	return (0);
 }
 
-void	check_for_program_path(t_child *childs)
+int	check_for_program_path(t_command *cmd)
 {
 	char	*tmp;
 
-	while (childs)
+	while (cmd)
 	{
-		childs->command.path = NULL;
-		if (ft_strchr(childs->command.args[0], '/'))
+		cmd->path = NULL;
+		if (ft_strchr(cmd->args[0], '/'))
 		{
-			if (!access(childs->command.args[0], X_OK))
+			if (!access(cmd->args[0], X_OK))
 			{
-				tmp = ft_strdup(ft_strrchr(childs->command.args[0], '/') + 1);
-				childs->command.path = childs->command.args[0];
-				childs->command.args[0] = tmp;
+				tmp = ft_strdup(ft_strrchr(cmd->args[0], '/') + 1);
+				if (!tmp)
+					return (-1);
+				cmd->path = cmd->args[0];
+				cmd->args[0] = tmp;
 			}
 			else
 			{
-				childs->command.path = ft_strdup(childs->command.args[0]);
-				free_args(childs->command.args);
-				childs->command.args = NULL;
+				cmd->path = ft_strdup(cmd->args[0]);
+				if (!cmd->path)
+					return (-1);
+				free_args(cmd->args);
+				cmd->args = NULL;
 			}
 		}
-		childs = childs->next;
+		cmd = cmd->next;
 	}
+	return (0);
 }
 
-void	set_cmds(int ac, char **av, t_pipex *pipex)
+int	set_cmds(int ac, char **av, t_pipex *pipex)
 {
 	int	i;
 	int	j;
 
 	i = 1;
 	j = 0;
-	pipex->childs = NULL;
-	pipex->pipes = NULL;
 	while (++i < ac - 1 && ++j)
-		add_new_child(&pipex->childs, ft_split(av[i], ' '));
-	check_for_program_path(pipex->childs);
+		if (add_new_command(&pipex->command, ft_split(av[i], ' ')))
+			return (-1);
+	if (check_for_program_path(pipex->command))
+		return (-1);
 	pipex->pids = ft_calloc(sizeof(int), j + 1);
-	i = 0;
-	while (++i < j)
-		add_new_pipe(&pipex->pipes);
+	if (!pipex->pids)
+		return (-1);
+	pipex->pipefds = ft_calloc(sizeof(int[2]), j);
+	if (!pipex->pipefds)
+		return (-1);
+	return (j);
 }

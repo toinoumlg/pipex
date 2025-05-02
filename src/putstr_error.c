@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 11:24:13 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/24 17:02:43 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/04/28 13:42:20 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,20 @@ void	command_nf(char *cmd)
 	ft_putstr_fd("pipex: command not found: ", 2);
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd("\n", 2);
-	return (127);
 }
 
-void	handle_errors(t_file file, t_child *child)
+void	handle_errors_mid(t_command *cmd)
+{
+	if (!cmd->args && cmd->path)
+		no_file_or_dir(cmd->path);
+}
+
+void	handle_errors(t_file file, t_command *cmd)
 {
 	if (file.exist)
 		no_file_or_dir(file.path);
 	else if (file.read)
 		permission_denied(file.path);
-	else if (!child->command.args && child->command.path)
-		no_file_or_dir(child->command.path);
+	else if (!cmd->args && cmd->path)
+		no_file_or_dir(cmd->path);
 }

@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 13:02:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/03/24 18:38:29 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/02 18:40:55 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,20 @@ char	*fill_word(char const *s, char c)
 	return (str);
 }
 
+char	**free_last(char **split, int j)
+{
+	int	i;
+
+	i = 0;
+	while (i < j)
+	{
+		free(split[i]);
+		i++;
+	}
+	free(split);
+	return (NULL);
+}
+
 // Allocates with malloc() and returns an array of strings.
 // Obtained by splitting ’s’ using ’c’ as a delimiter.
 // Array is ended with a NULL pointer.
@@ -75,6 +89,8 @@ char	**ft_split(char const *s, char c)
 		if (s[i] != c)
 		{
 			split[j] = fill_word(s + i, c);
+			if (!split[j])
+				return (free_last(split, j));
 			while (s[i] != c && s[i])
 				i++;
 			j++;
