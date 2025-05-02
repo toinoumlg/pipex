@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 21:39:50 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/02 18:55:16 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/02 19:02:04 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,7 @@ int	set_env(char **envp, t_pipex *pipex)
 		pipex->env[i] = ft_strjoin(tmp, "/");
 		free(tmp);
 		if (!pipex->env[i])
-		{
-			while (--i >= 0)
-				free(pipex->env[i]);
-			free(pipex->env);
-			return -1;
-		}
+			return (-1);
 	}
 	return (0);
 }
