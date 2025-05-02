@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:32:53 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/28 13:52:15 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/02 14:47:58 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,10 +25,7 @@ void	set_new_command(t_command **cmd, char **args)
 	{
 		free(args);
 		tmp->args = ft_calloc(sizeof(char *), 2);
-		tmp->args[0] = ft_calloc(sizeof(char), 4);
-		tmp->args[0][0] = 'c';
-		tmp->args[0][1] = 'a';
-		tmp->args[0][2] = 't';
+		tmp->args[0] = ft_strdup("cat");
 	}
 	*cmd = tmp;
 }
