@@ -15,7 +15,7 @@ OBJ_DIR = $(SRC_DIR)/obj
 HEADER= include/pipex.h
 LIBFTPRINTF = libftprintf/libftprintf.a
 
-all: $(NAME)
+all: libftprintf $(NAME)
 
 bonus: $(NAME_BONUS)
 
@@ -26,7 +26,7 @@ norminette:
 	@clear
 	@norminette src include
 
-$(NAME): $(LIBFTPRINTF) $(OBJ_DIR) $(OBJ_FILES) 
+$(NAME): $(OBJ_DIR) $(OBJ_FILES) $(LIBFTPRINTF)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ_FILES) $(LIBFTPRINTF)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
@@ -35,7 +35,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-$(LIBFTPRINTF):
+libftprintf:
 	make -C libftprintf
 
 clean:

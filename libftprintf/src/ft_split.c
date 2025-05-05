@@ -6,11 +6,24 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 13:02:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/03/24 18:38:29 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/05 16:14:03 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/libft.h"
+
+void	free_split(char **split)
+{
+	int	i;
+
+	i = -1;
+	if (split)
+	{
+		while (split[++i])
+			free(split[i]);
+		free(split);
+	}
+}
 
 int	word_count(char const *s, char c)
 {
@@ -75,6 +88,11 @@ char	**ft_split(char const *s, char c)
 		if (s[i] != c)
 		{
 			split[j] = fill_word(s + i, c);
+			if (!split[j])
+			{
+				free_split(split);
+				return (NULL);
+			}
 			while (s[i] != c && s[i])
 				i++;
 			j++;

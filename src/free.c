@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:09:45 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/28 13:53:21 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/05 17:22:00 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,12 @@ void	free_all_commands(t_command *cmd)
 
 void	free_pipex(t_pipex pipex)
 {
-	free_all_commands(pipex.command);
-	free_args(pipex.env);
-	free(pipex.pipefds);
-	free(pipex.pids);
+	if (pipex.command)
+		free_all_commands(pipex.command);
+	if (pipex.env)
+		free_args(pipex.env);
+	if (pipex.pipefds)
+		free(pipex.pipefds);
+	if (pipex.pids)
+		free(pipex.pids);
 }

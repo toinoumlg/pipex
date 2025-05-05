@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 20:16:32 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/28 14:19:09 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/05 17:53:44 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ typedef struct s_command
 typedef struct s_pipex
 {
 	char				**env;
-	int					(*pipefds)[2];
+	int (*pipefds)[2];
 	t_command			*command;
 	int					*pids;
 	int					size;
@@ -50,7 +50,7 @@ typedef struct s_pipex
 
 int						init_and_check_args(int ac, char **av, char **envp,
 							t_pipex *pipex);
-char					**set_env(char **envp);
+int						set_env(char **envp, t_pipex *pipex);
 int						set_cmds(int ac, char **av, t_pipex *pipex);
 void					first_child(t_pipex *pipex, char **envp);
 void					mid_children(t_pipex *pipex, char **envp);
