@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:36:24 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/05 18:29:39 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/06 13:34:17 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@ void	try_execve(t_pipex *pipex, char **envp)
 	while (pipex->env[++i])
 	{
 		tmp = ft_strjoin(pipex->env[i], pipex->command->args[0]);
+		if (!tmp)
+			return (free_pipex(*pipex), exit(EXIT_FAILURE));
 		execve(tmp, pipex->command->args, envp);
 		free(tmp);
 	}

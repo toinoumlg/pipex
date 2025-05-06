@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/13 12:32:00 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/05 15:51:14 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/06 13:36:53 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 
 # include <stdlib.h>
 # include <unistd.h>
-# define malloc(x) malloc_B(x)
 
 typedef struct s_list
 {
@@ -77,6 +76,5 @@ void				ft_lstadd_back(t_list **lst, t_list *new);
 void				ft_lstdelone(t_list *lst, void (*del)(void *));
 void				ft_lstclear(t_list **lst, void (*del)(void *));
 void				ft_lstiter(t_list *lst, void (*f)(void *));
-void				*malloc_B(size_t size);
 
 #endif

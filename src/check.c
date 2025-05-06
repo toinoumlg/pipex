@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/05 18:25:26 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/06 14:01:29 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,18 +62,12 @@ void	set_fds(char *in_path, char *out_path, t_pipex *pipex)
 	set_out_fd(pipex, pipex->out.path);
 }
 
-void	init_to_null(t_pipex *pipex)
+int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
 {
-	pipex->size = 0;
 	pipex->command = NULL;
 	pipex->pids = NULL;
 	pipex->env = NULL;
 	pipex->pipefds = NULL;
-}
-
-int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
-{
-	init_to_null(pipex);
 	if (set_env(envp, pipex))
 		return (-1);
 	set_fds(av[1], av[ac - 1], pipex);

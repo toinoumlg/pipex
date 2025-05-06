@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:32:53 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/05 18:29:01 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/06 14:48:00 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,10 +64,20 @@ int	add_new_command(t_command **cmd, char **args)
 	}
 }
 
-int	check_for_program_path(t_command *cmd)
+int	set_path(t_command *cmd)
 {
 	char	*tmp;
 
+	tmp = ft_strdup(ft_strrchr(cmd->args[0], '/') + 1);
+	if (!tmp)
+		return (-1);
+	cmd->path = cmd->args[0];
+	cmd->args[0] = tmp;
+	return (0);
+}
+
+int	check_for_program_path(t_command *cmd)
+{
 	while (cmd)
 	{
 		cmd->path = NULL;
@@ -75,11 +85,8 @@ int	check_for_program_path(t_command *cmd)
 		{
 			if (!access(cmd->args[0], X_OK))
 			{
-				tmp = ft_strdup(ft_strrchr(cmd->args[0], '/') + 1);
-				if (!tmp)
+				if (set_path(cmd))
 					return (-1);
-				cmd->path = cmd->args[0];
-				cmd->args[0] = tmp;
 			}
 			else
 			{
@@ -108,7 +115,7 @@ int	set_cmds(int ac, char **av, t_pipex *pipex)
 	if (check_for_program_path(pipex->command))
 		return (free_pipex(*pipex), -1);
 	pipex->pids = ft_calloc(sizeof(int), j + 1);
-	pipex->pipefds = ft_calloc(sizeof(int[2]), j);
+	pipex->pipefds = ft_calloc(sizeof(int [2]), j);
 	if (!pipex->pids || !pipex->pipefds)
 		return (free_pipex(*pipex), -1);
 	return (j);

@@ -17,9 +17,9 @@ LIBFTPRINTF = libftprintf/libftprintf.a
 
 all: libftprintf $(NAME)
 
-bonus: $(NAME_BONUS)
+bonus: libftprintf $(NAME_BONUS)
 
-$(NAME_BONUS): $(LIBFTPRINTF) $(OBJ_DIR) $(BNS_OBJ_FILES)
+$(NAME_BONUS): $(OBJ_DIR) $(BNS_OBJ_FILES) $(LIBFTPRINTF)
 	$(CC) $(CFLAGS) -o $(NAME_BONUS) $(BNS_OBJ_FILES) $(LIBFTPRINTF)
 
 norminette:
