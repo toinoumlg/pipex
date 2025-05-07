@@ -1,6 +1,6 @@
 #include "../include/libft.h"
 
-static int	count = 15;
+static int	count = 0;
 
 void	*malloc_B(size_t size)
 {

@@ -6,17 +6,17 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 16:27:42 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/17 15:08:48 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/07 17:45:01 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-void	print_childs(t_child *childs)
+void	print_cmds(t_cmd *cmds)
 {
-	while (childs)
+	while (cmds)
 	{
-		ft_putstr_fd(childs->command.args[0], 2);
-		childs = childs->next;
+		ft_putstr_fd(cmds->args[0], 2);
+		cmds = cmds->next;
 	}
 }

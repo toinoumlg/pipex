@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/10/13 12:32:00 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/02 17:42:43 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/07 11:25:09 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 
 # include <stdlib.h>
 # include <unistd.h>
-# define malloc(x) malloc_B(x)
 
 typedef struct s_list
 {

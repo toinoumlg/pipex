@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 17:12:40 by amalangu          #+#    #+#             */
-/*   Updated: 2025/04/28 18:02:27 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/07 17:44:52 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	exe_mid_children(t_pipex *pipex, char **envp, int i)
 {
 	set_fds_mid_children(pipex, i);
 	try_execve(pipex, envp);
-	command_nf(pipex->command->args[0]);
+	cmd_nf(pipex->cmd->args[0]);
 	free_pipex(*pipex);
 	exit(127);
 }
@@ -41,7 +41,7 @@ void	mid_children(t_pipex *pipex, char **envp)
 	{
 		if (pipe(pipex->pipefds[i]) == -1)
 			pipe_error(pipex);
-		if (pipex->command->args)
+		if (pipex->cmd->args)
 		{
 			pipex->pids[i] = fork();
 			if (pipex->pids[i] < 0)
@@ -49,9 +49,9 @@ void	mid_children(t_pipex *pipex, char **envp)
 			if (pipex->pids[i] == 0)
 				exe_mid_children(pipex, envp, i);
 		}
-		handle_errors_mid(pipex->command);
+		handle_errors_mid(pipex->cmd);
 		close(pipex->pipefds[i][1]);
 		close(pipex->pipefds[i - 1][0]);
-		free_and_set_to_next_command(&pipex->command);
+		free_and_set_to_next_cmd(&pipex->cmd);
 	}
 }

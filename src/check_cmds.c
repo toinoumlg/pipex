@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_commands.c                                   :+:      :+:    :+:   */
+/*   check_cmds.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 15:32:53 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/02 17:37:16 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/07 19:27:16 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/pipex.h"
 
-int	set_up_cat(t_command **cmd, char **args, t_command *tmp)
+int	set_up_cat(t_cmd **cmd, char **args, t_cmd *tmp)
 {
 	free(args);
 	tmp->args = ft_calloc(sizeof(char *), 2);
@@ -26,12 +26,12 @@ int	set_up_cat(t_command **cmd, char **args, t_command *tmp)
 	return (0);
 }
 
-int	set_new_command(t_command **cmd, char **args)
+int	set_new_command(t_cmd **cmd, char **args)
 {
-	t_command	*tmp;
+	t_cmd	*tmp;
 
 	tmp = *cmd;
-	tmp = ft_calloc(sizeof(t_command), 1);
+	tmp = ft_calloc(sizeof(t_cmd), 1);
 	if (!tmp)
 	{
 		*cmd = NULL;
@@ -46,10 +46,10 @@ int	set_new_command(t_command **cmd, char **args)
 	return (0);
 }
 
-int	add_new_command(t_command **cmd, char **args)
+int	add_new_command(t_cmd **cmd, char **args)
 {
-	t_command	*tmp;
-	t_command	*head;
+	t_cmd	*tmp;
+	t_cmd	*head;
 
 	tmp = *cmd;
 	if (!tmp)
@@ -70,23 +70,15 @@ int	add_new_command(t_command **cmd, char **args)
 	return (0);
 }
 
-int	check_for_program_path(t_command *cmd)
+int	check_for_program_path(t_cmd *cmd)
 {
-	char	*tmp;
-
 	while (cmd)
 	{
 		cmd->path = NULL;
 		if (ft_strchr(cmd->args[0], '/'))
 		{
 			if (!access(cmd->args[0], X_OK))
-			{
-				tmp = ft_strdup(ft_strrchr(cmd->args[0], '/') + 1);
-				if (!tmp)
-					return (-1);
 				cmd->path = cmd->args[0];
-				cmd->args[0] = tmp;
-			}
 			else
 			{
 				cmd->path = ft_strdup(cmd->args[0]);
@@ -109,9 +101,9 @@ int	set_cmds(int ac, char **av, t_pipex *pipex)
 	i = 1;
 	j = 0;
 	while (++i < ac - 1 && ++j)
-		if (add_new_command(&pipex->command, ft_split(av[i], ' ')))
+		if (add_new_command(&pipex->cmd, ft_split(av[i], ' ')))
 			return (-1);
-	if (check_for_program_path(pipex->command))
+	if (check_for_program_path(pipex->cmd))
 		return (-1);
 	pipex->pids = ft_calloc(sizeof(int), j + 1);
 	if (!pipex->pids)

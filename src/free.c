@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:09:45 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/02 18:56:28 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/07 19:38:32 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,46 +27,28 @@ void	free_args(char **args)
 	args = NULL;
 }
 
-void	free_and_set_to_next_command(t_command **cmd)
+void	free_all_cmds(t_cmd *cmd)
 {
-	t_command	*next;
-	t_command	*tmp;
-
-	if (!*cmd)
-		return ;
-	tmp = *cmd;
-	if (!tmp->next)
-		return ;
-	next = tmp->next;
-	if (tmp->args)
-		free_args(tmp->args);
-	if (tmp->path)
-		free(tmp->path);
-	free(tmp);
-	*cmd = next;
-}
-
-void	free_all_commands(t_command *cmd)
-{
-	t_command	*tmp;
+	t_cmd	*next;
 
 	if (!cmd)
 		return ;
 	while (cmd)
 	{
-		tmp = cmd->next;
+		next = cmd->next;
+		if (cmd->path && !cmd->args)
+			free(cmd->path);
 		if (cmd->args)
 			free_args(cmd->args);
-		if (cmd->path)
-			free(cmd->path);
 		free(cmd);
-		cmd = tmp;
+		cmd = next;
 	}
 }
 
 void	free_pipex(t_pipex pipex)
 {
-	free_all_commands(pipex.command);
+	if (pipex.cmd)
+		free_all_cmds(pipex.cmd);
 	if (pipex.env)
 		free_args(pipex.env);
 	if (pipex.pipefds)

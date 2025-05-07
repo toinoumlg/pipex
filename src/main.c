@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 18:09:16 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/02 18:58:05 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/07 18:49:03 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,18 @@ int	end_pipex(t_pipex pipex, int status)
 	return (WEXITSTATUS(status));
 }
 
+void	wait_children(int *status, int *pids, int size)
+{
+	int	i;
+
+	i = -1;
+	while (++i < size)
+	{
+		waitpid(pids[i], status, 0);
+		// handle_errors()
+	}
+}
+
 int	main(int ac, char **av, char **envp)
 {
 	t_pipex	pipex;
@@ -31,8 +43,7 @@ int	main(int ac, char **av, char **envp)
 	if (pipex.size < 0)
 		return (free_pipex(pipex), 1);
 	first_child(&pipex, envp);
-	last_child(&pipex, envp);
-	waitpid(pipex.pids[0], &status, 0);
-	waitpid(pipex.pids[1], &status, 0);
+	children(&pipex, envp);
+	wait_children(&status, pipex.pids, pipex.size);
 	return (end_pipex(pipex, status));
 }

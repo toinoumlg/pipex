@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 21:39:50 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/02 19:02:04 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/07 11:33:29 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,21 +26,24 @@ char	**get_env(char **envp)
 int	set_env(char **envp, t_pipex *pipex)
 {
 	char	*tmp;
+	char	**env;
 	int		i;
 
 	i = -1;
 	if (!envp)
 		return (-1);
-	pipex->env = get_env(envp);
-	if (!pipex->env)
+	pipex->env = ft_calloc(sizeof(char *), 100);
+	env = get_env(envp);
+	if (!env)
 		return (-1);
-	while (pipex->env[++i])
+	while (env[++i])
 	{
-		tmp = pipex->env[i];
+		tmp = ft_strdup(env[i]);
 		pipex->env[i] = ft_strjoin(tmp, "/");
 		free(tmp);
 		if (!pipex->env[i])
-			return (-1);
+			return (free_args(env), -1);
 	}
+	free_args(env);
 	return (0);
 }

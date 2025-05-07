@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/02 18:47:14 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/07 17:49:52 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,11 +64,12 @@ void	set_fds(char *in_path, char *out_path, t_pipex *pipex)
 
 int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
 {
-	pipex->command = NULL;
+	pipex->cmd = NULL;
 	pipex->env = NULL;
 	pipex->pids = NULL;
 	pipex->pipefds = NULL;
-	if (!set_env(envp,pipex))
+	pipex->i = 0;
+	if (set_env(envp, pipex))
 		return (-1);
 	set_fds(av[1], av[ac - 1], pipex);
 	return (set_cmds(ac, av, pipex));
