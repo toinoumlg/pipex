@@ -6,11 +6,24 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/06 13:02:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/02 18:40:55 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/06 14:47:03 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../include/libft.h"
+
+void	free_split(char **split)
+{
+	int	i;
+
+	i = -1;
+	if (split)
+	{
+		while (split[++i])
+			free(split[i]);
+		free(split);
+	}
+}
 
 int	word_count(char const *s, char c)
 {
@@ -54,18 +67,11 @@ char	*fill_word(char const *s, char c)
 	return (str);
 }
 
-char	**free_last(char **split, int j)
+void	forward_string(int *i, char c, char const *s, int *j)
 {
-	int	i;
-
-	i = 0;
-	while (i < j)
-	{
-		free(split[i]);
-		i++;
-	}
-	free(split);
-	return (NULL);
+	while (s[*i] != c && s[*i])
+		(*i)++;
+	(*j)++;
 }
 
 // Allocates with malloc() and returns an array of strings.
@@ -90,10 +96,8 @@ char	**ft_split(char const *s, char c)
 		{
 			split[j] = fill_word(s + i, c);
 			if (!split[j])
-				return (free_last(split, j));
-			while (s[i] != c && s[i])
-				i++;
-			j++;
+				return (free_split(split), (NULL));
+			forward_string(&i, c, s, &j);
 		}
 		else
 			i++;

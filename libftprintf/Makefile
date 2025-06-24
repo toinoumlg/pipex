@@ -1,7 +1,7 @@
 LIBFTPRINTF = libftprintf.a
 CFLAGS = -Werror -Wall -Wextra
 CC = cc 
-HEADER = include/libftprintf.h
+HEADER = include/libftprintf.h include/libft.h
 
 SRCS = ft_printf.c ft_printf_putstr_int.c \
 		ft_printf_specifier.c ft_printf_nbr.c\
@@ -14,7 +14,7 @@ SRCS = ft_printf.c ft_printf_putstr_int.c \
 		ft_putendl_fd.c ft_putnbr_fd.c ft_striteri.c \
 		ft_lstnew.c ft_lstadd_front.c ft_lstsize.c \
 		ft_lstlast.c ft_lstadd_back.c ft_lstdelone.c \
-		ft_lstclear.c ft_lstiter.c ft_lstmap.c get_next_line.c tmp.c
+		ft_lstclear.c ft_lstiter.c ft_lstmap.c get_next_line.c
 
 SRC_DIR = src
 LIBFT_OBJ_DIR = libft/src/obj/
@@ -26,7 +26,7 @@ all: $(LIBFTPRINTF)
 $(LIBFTPRINTF): $(OBJ_DIR) $(OBJECTS) $(HEADER) 
 	ar rcs $(LIBFTPRINTF) $(OBJECTS)
 
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c 
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER) 
 	$(CC) $(INCLUDES) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR):

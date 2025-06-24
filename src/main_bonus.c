@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 18:09:16 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/02 14:33:16 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/10 18:29:37 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 int	end_pipex(t_pipex pipex, int status)
 {
-	if (pipex.out.write)
-		return (free_pipex(pipex), 1);
 	free_pipex(pipex);
 	return (WEXITSTATUS(status));
 }

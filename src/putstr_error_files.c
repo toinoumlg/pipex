@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   putstr_error.c                                     :+:      :+:    :+:   */
+/*   putstr_error_files.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 11:24:13 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/07 17:44:59 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:21:52 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,25 +26,21 @@ void	no_file_or_dir(char *path)
 	ft_putstr_fd("\n", 2);
 }
 
-void	cmd_nf(char *cmd)
+void	is_a_directory(char *path)
 {
-	ft_putstr_fd("pipex: cmd not found: ", 2);
-	ft_putstr_fd(cmd, 2);
+	ft_putstr_fd("pipex: is a directory: ", 2);
+	ft_putstr_fd(path, 2);
 	ft_putstr_fd("\n", 2);
 }
 
-void	handle_errors_mid(t_cmd *cmd)
-{
-	if (!cmd->args && cmd->path)
-		no_file_or_dir(cmd->path);
-}
-
-void	handle_errors(t_file file, t_cmd *cmd)
+void	handle_file_errors(t_file file, int i)
 {
 	if (file.exist)
-		no_file_or_dir(file.path);
+		return (no_file_or_dir(file.path));
+	else if (file.write && i >= 1)
+		return (permission_denied(file.path));
 	else if (file.read)
-		permission_denied(file.path);
-	else if (!cmd->args && cmd->path)
-		no_file_or_dir(cmd->path);
+		return (permission_denied(file.path));
+	else if (file.is_a_directory > 0 && i != 0)
+		return (is_a_directory(file.path));
 }

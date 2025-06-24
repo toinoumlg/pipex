@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:09:45 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/07 19:38:32 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/10 16:59:09 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,31 +17,28 @@ void	free_args(char **args)
 	int	i;
 
 	i = -1;
-	if (!args)
-		return ;
-	while (args[++i])
+	if (args)
 	{
-		free(args[i]);
+		while (args[++i])
+			free(args[i]);
+		free(args);
 	}
-	free(args);
 	args = NULL;
 }
 
 void	free_all_cmds(t_cmd *cmd)
 {
-	t_cmd	*next;
+	t_cmd	*tmp;
 
-	if (!cmd)
-		return ;
 	while (cmd)
 	{
-		next = cmd->next;
-		if (cmd->path && !cmd->args)
+		tmp = cmd->next;
+		if (cmd->path)
 			free(cmd->path);
 		if (cmd->args)
 			free_args(cmd->args);
 		free(cmd);
-		cmd = next;
+		cmd = tmp;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: amalangu <amalangu@student.42lyon.fr>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/14 08:37:28 by amalangu          #+#    #+#             */
-/*   Updated: 2025/05/07 17:49:52 by amalangu         ###   ########.fr       */
+/*   Updated: 2025/05/10 17:45:05 by amalangu         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,10 @@
 void	check_file(char *av, t_file *file)
 {
 	file->path = av;
+	file->fd = -1;
+	file->is_a_directory = open(av, __O_DIRECTORY);
+	if (file->is_a_directory > 0)
+		close(file->is_a_directory);
 	file->exist = access(av, F_OK);
 	file->read = access(av, R_OK);
 	file->write = access(av, W_OK);
@@ -23,9 +27,9 @@ void	check_file(char *av, t_file *file)
 
 void	set_in_fd(t_pipex *pipex, char *in_path)
 {
-	if (!pipex->in.read)
+	pipex->in.fd = open(in_path, O_RDONLY);
+	if (pipex->in.fd >= 0)
 	{
-		pipex->in.fd = open(in_path, O_RDONLY);
 		if (dup2(pipex->in.fd, STDIN_FILENO) == -1)
 		{
 			close(pipex->in.fd);
@@ -37,7 +41,8 @@ void	set_in_fd(t_pipex *pipex, char *in_path)
 
 void	set_out_fd(t_pipex *pipex, char *out_path)
 {
-	if (pipex->out.exist || !pipex->out.write)
+	if ((pipex->out.exist || !pipex->out.write)
+		&& pipex->out.is_a_directory < 0)
 	{
 		unlink(out_path);
 		pipex->out.fd = open(out_path, O_CREAT | O_WRONLY, 0666);
@@ -65,8 +70,8 @@ void	set_fds(char *in_path, char *out_path, t_pipex *pipex)
 int	init_and_check_args(int ac, char **av, char **envp, t_pipex *pipex)
 {
 	pipex->cmd = NULL;
-	pipex->env = NULL;
 	pipex->pids = NULL;
+	pipex->env = NULL;
 	pipex->pipefds = NULL;
 	pipex->i = 0;
 	if (set_env(envp, pipex))

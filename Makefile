@@ -1,13 +1,15 @@
 NAME = pipex
+NAME_BONUS = pipex_bonus
 CC = cc
 CFLAGS = -Werror -Wextra -Wall
-SRC_FILES = main.c free.c children.c check.c \
-	check_env.c putstr_error.c check_cmds.c test_utils.c \
-	children_fds.c error.c
-SRC_BNS_FILES = main.c free.c children.c check.c \
-	check_env.c putstr_error.c check_cmds.c test_utils.c \
-	children_fds.c error.c children_bonus.c
+SRC_FILES = main.c free.c children.c check.c error.c check_access.c \
+	check_env.c putstr_error_cmd.c putstr_error_files.c check_cmds.c children_fds.c
+BNS_SRC_FILES = main_bonus.c free.c children.c check.c check_access.c \
+	check_env.c putstr_error_files.c putstr_error_cmd.c check_cmds.c \
+	children_bonus.c children_fds.c error.c
+
 OBJ_FILES = $(SRC_FILES:%.c=$(OBJ_DIR)/%.o)
+BNS_OBJ_FILES = $(BNS_SRC_FILES:%.c=$(OBJ_DIR)/%.o)
 SRC_DIR = src
 OBJ_DIR = $(SRC_DIR)/obj
 HEADER= include/pipex.h
@@ -15,14 +17,19 @@ LIBFTPRINTF = libftprintf/libftprintf.a
 
 all: libftprintf $(NAME)
 
+bonus: libftprintf $(NAME_BONUS)
+
+$(NAME_BONUS): $(OBJ_DIR) $(BNS_OBJ_FILES) $(LIBFTPRINTF)
+	$(CC) $(CFLAGS) -o $(NAME_BONUS) $(BNS_OBJ_FILES) $(LIBFTPRINTF)
+
 norminette:
 	@clear
 	@norminette src include
 
-$(NAME): $(OBJ_DIR) $(OBJ_FILES) $(LIBFTPRINTF)
+$(NAME): $(OBJ_DIR) $(OBJ_FILES) $(HEADER) $(LIBFTPRINTF)
 	$(CC) $(CFLAGS) -o $(NAME) $(OBJ_FILES) $(LIBFTPRINTF)
 
-$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER)
+$(OBJ_DIR)%.o: $(SRC_DIR)%.c $(HEADER) $(LIBFTPRINTF)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(OBJ_DIR):
@@ -36,9 +43,9 @@ clean:
 	make -C libftprintf clean
 
 fclean: clean
-	rm -rf pipex
+	rm -rf pipex pipex_bonus
 	make -C libftprintf fclean
 
 re: fclean all
 
-.PHONY: libftprintf all
+.PHONY: libftprintf all bonus re fclean clean
